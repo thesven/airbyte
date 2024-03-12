@@ -78,7 +78,7 @@ def config(basic_config) -> dict:
         (ProductImages, None, ""),
         (ProductVariants, None, ""),
         # 
-        (Customers, None, "customers.json"),
+        (Customers, None, "relationship_installs.json"),
         (Orders, None, "orders.json"),
         (DraftOrders, None, "draft_orders.json"),
         (Products, None, "products.json"),

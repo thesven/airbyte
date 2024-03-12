@@ -54,7 +54,7 @@ definitions:
     $ref: "#/definitions/base_stream"
     name: "customers"
     $parameters:
-      path: "customers.json"
+      path: "relationship_installs.json"
       field_path: "customer"
 
   subscriptions_stream:

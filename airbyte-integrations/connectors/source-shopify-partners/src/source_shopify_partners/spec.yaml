@@ -1,0 +1,25 @@
+documentationUrl: https://shopify.dev/docs/api/partner
+connectionSpecification:
+  $schema: http://json-schema.org/draft-07/schema#
+  title: Shopify Partners Spec
+  type: object
+  required:
+    - api_key
+    - api_version
+    - partner_id
+    - application_id
+  properties:
+    api_key:
+      type: string
+      description: Your shopify partners API key
+    api_version:
+      type: string
+      description: The version of the Partners API that you'd like to use eg. 2024-01
+      examples:
+        - "2024-01"
+    partner_id:
+      type: string
+      description: Your shopify partners ID
+    application_id:
+        type: string
+        description: the ID of the application that you would like to collect data for

@@ -35,7 +35,7 @@ curl https://raw.githubusercontent.com/airbytehq/airbyte/master/docs/connector-d
 We can also delete the boilerplate schema files
 
 ```bash
-rm source_exchange_rates_tutorial/schemas/customers.json
+rm source_exchange_rates_tutorial/schemas/relationship_installs.json
 rm source_exchange_rates_tutorial/schemas/employees.json
 ```
 
