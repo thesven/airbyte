@@ -8,6 +8,7 @@ connectionSpecification:
     - api_version
     - partner_id
     - application_id
+    - num_results_per_call
   properties:
     api_key:
       type: string
@@ -21,5 +22,10 @@ connectionSpecification:
       type: string
       description: Your shopify partners ID
     application_id:
-        type: string
-        description: the ID of the application that you would like to collect data for
+      type: string
+      description: the ID of the application that you would like to collect data for
+    num_results_per_call:
+      type: string
+      description: the amount of results that should be returned for each API call
+      examples:
+        - 100

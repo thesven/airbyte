@@ -1,9 +1,8 @@
 #
 # Copyright (c) 2023 Airbyte, Inc., all rights reserved.
 #
-import json
 from abc import ABC
-from typing import Any, Iterable, List, Mapping, MutableMapping, Optional, Tuple, Union
+from typing import Any, List, Mapping, MutableMapping, Optional, Tuple, Union
 
 import requests
 from airbyte_cdk.sources import AbstractSource
@@ -22,25 +21,6 @@ class ShopifyPartnersAPI:
         self.partners_api_key = partners_api_key
         self.partners_organization_id = partners_organization_id
         self.partners_api_version = partners_api_version
-        self.headers = {
-            "X-Shopify-Access-Token": self.partners_api_key,
-            "Content-Type": "application/json",
-        }
-        self.base_url = f"https://partners.shopify.com/{self.partners_organization_id}/api/{self.partners_api_version}/graphql.json"
-
-    def send_query(self, query: str, variables: dict = None):
-        try:
-            response = requests.post(
-                self.base_url,
-                headers=self.headers,
-                json={"query": query, "variables": variables},
-            )
-            response.raise_for_status()
-            return response.json()
-        except requests.exceptions.HTTPError as e:
-            return {"error": f"HTTP Error: {e}"}
-        except requests.exceptions.RequestException as e:
-            return {"error": f"Error: {e}"}
 
     def _compose_query(
             self, app_id: str, event_types: list, first: int = 10, after: str = None
@@ -276,7 +256,6 @@ class ShopifyPartnersStream(HttpStream, ABC):
     See the reference docs for the full list of configurable options.
     """
 
-    # TODO: Fill in the url base. Required.
     url_base = "https://partners.shopify.com"
 
     def _create_prepared_request(
@@ -287,14 +266,17 @@ class ShopifyPartnersStream(HttpStream, ABC):
             json: Optional[Mapping[str, Any]] = None,
             data: Optional[Union[str, Mapping[str, Any]]] = None,
     ) -> requests.PreparedRequest:
-        print("PREPARING REQUEST")
         url = self._join_url(self.url_base, path)
-        print("URL ::", url)
         if self.must_deduplicate_query_params():
             query_params = self.deduplicate_query_params(url, params)
         else:
             query_params = params or {}
-        args = {"method": "POST", "url": url, "headers": headers, "params": query_params}
+        args = {
+            "method": "POST",
+            "url": url,
+            "headers": headers,
+            "params": query_params,
+        }
         if json and data:
             raise Exception(
                 "At the same time only one of the 'request_body_data' and 'request_body_json' functions can return data"
@@ -304,13 +286,14 @@ class ShopifyPartnersStream(HttpStream, ABC):
         elif data:
             args["data"] = data
 
-        print("PREPARED ARGS", args)
-
-        prepared_request: requests.PreparedRequest = self._session.prepare_request(requests.Request(**args))
-        print('PREPARED REQUEST', prepared_request)
+        prepared_request: requests.PreparedRequest = self._session.prepare_request(
+            requests.Request(**args)
+        )
         return prepared_request
 
-    def next_page_token(self, response: requests.Response) -> Optional[Mapping[str, Any]]:
+    def next_page_token(
+            self, response: requests.Response
+    ) -> Optional[Mapping[str, Any]]:
         """
         TODO: Override this method to define a pagination strategy. If you will not be using pagination, no action is required - just return None.
 
@@ -326,8 +309,12 @@ class ShopifyPartnersStream(HttpStream, ABC):
                 If there are no more pages in the result, return None.
         """
         response_data = response.json()
-        if(response_data['data']['app']['events']['pageInfo']['hasNextPage'] == True):
-            return response_data['data']['app']['events']['edges'][-1]['cursor']
+        if response_data["data"]["app"]["events"]["pageInfo"]["hasNextPage"] == True:
+            print(
+                "NEXT PAGE TOKEN :",
+                response_data["data"]["app"]["events"]["edges"][-1]["cursor"],
+            )
+            return response_data["data"]["app"]["events"]["edges"][-1]["cursor"]
 
         return None
 
@@ -338,58 +325,133 @@ class ShopifyPartnersStream(HttpStream, ABC):
         return "POST"
 
 
-    def request_params(
-            self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, any] = None, next_page_token: Mapping[str, Any] = None
-    ) -> MutableMapping[str, Any]:
-        """
-        TODO: Override this method to define any query parameters to be set. Remove this method if you don't need to define request params.
-        Usually contains common params e.g. pagination size etc.
-        """
-        return {}
+class ShopifyPartnersRelationshipStream(ShopifyPartnersStream):
+    """
+    To be used as a base class for all Relationship Streams
+    """
 
-    def parse_response(self, response: requests.Response, **kwargs) -> Iterable[Mapping]:
-        """
-        TODO: Override this method to define how a response is parsed.
-        :return an iterable containing each record in the response
-        """
-        yield {}
-
-
-class RelationshipInstalls(ShopifyPartnersStream):
     url_base = ""
     application_id = ""
     api_key = ""
     api_version = ""
-    # Set this as a noop.
+
     primary_key = "occurredAt"
 
     def __init__(self, config: Mapping[str, Any], **kwargs):
         super().__init__()
         self.url_base = f"https://partners.shopify.com/{config['partner_id']}/api/{config['api_version']}/graphql.json"
         self.application_id = f"gid://partners/App/{config['application_id']}"
-        self.api_key = config['api_key']
-        self.api_version = config['api_version']
-
-    def next_page_token(self, response: requests.Response) -> Optional[Mapping[str, Any]]:
-        # The API does not offer pagination, so we return None to indicate there are no more pages in the response
-        return None
+        self.api_key = config["api_key"]
+        self.api_version = config["api_version"]
 
     def path(
             self,
             stream_state: Mapping[str, Any] = None,
             stream_slice: Mapping[str, Any] = None,
-            next_page_token: Mapping[str, Any] = None
+            next_page_token: Mapping[str, Any] = None,
     ) -> str:
-        #we don't need to append anything for the path as it is a single endpoint we are dealing with
+        # we don't need to append anything for the path as it is a single endpoint we are dealing with
         return ""
 
     def request_headers(
-            self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, Any] = None, next_page_token: Mapping[str, Any] = None
+            self,
+            stream_state: Mapping[str, Any],
+            stream_slice: Mapping[str, Any] = None,
+            next_page_token: Mapping[str, Any] = None,
     ) -> Mapping[str, Any]:
         return {
             "X-Shopify-Access-Token": self.api_key,
             "Content-Type": "application/json",
         }
+
+    def parse_response(self, response: requests.Response, **kwargs):
+        response_data = response.json()
+
+        # Iterate over each event in the response and yield it
+        for event in response_data["data"]["app"]["events"]["edges"]:
+            yield {
+                "type": event["node"]["type"],
+                "occurredAt": event["node"]["occurredAt"],
+                "app": {
+                    "id": event["node"]["app"]["id"],
+                    "name": event["node"]["app"]["name"],  # Corrected from id to name
+                },
+                "shop": {
+                    "id": event["node"]["shop"]["id"],
+                    "name": event["node"]["shop"]["name"],  # Corrected from id to name
+                },
+            }
+
+
+class ShopifySubscriptionWithCostStream(ShopifyPartnersStream):
+    """
+    To be used as a base class for all Subscription Streams w/ cost
+    """
+
+    url_base = ""
+    application_id = ""
+    api_key = ""
+    api_version = ""
+
+    primary_key = "occurredAt"
+
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__()
+        self.url_base = f"https://partners.shopify.com/{config['partner_id']}/api/{config['api_version']}/graphql.json"
+        self.application_id = f"gid://partners/App/{config['application_id']}"
+        self.api_key = config["api_key"]
+        self.api_version = config["api_version"]
+
+    def path(
+            self,
+            stream_state: Mapping[str, Any] = None,
+            stream_slice: Mapping[str, Any] = None,
+            next_page_token: Mapping[str, Any] = None,
+    ) -> str:
+        # we don't need to append anything for the path as it is a single endpoint we are dealing with
+        return ""
+
+    def request_headers(
+            self,
+            stream_state: Mapping[str, Any],
+            stream_slice: Mapping[str, Any] = None,
+            next_page_token: Mapping[str, Any] = None,
+    ) -> Mapping[str, Any]:
+        return {
+            "X-Shopify-Access-Token": self.api_key,
+            "Content-Type": "application/json",
+        }
+
+    def parse_response(self, response: requests.Response, **kwargs):
+        response_data = response.json()
+
+        # Iterate over each event in the response and yield it
+        for event in response_data["data"]["app"]["events"]["edges"]:
+            yield {
+                "type": event["node"]["type"],
+                "occurredAt": event["node"]["occurredAt"],
+                "app": {
+                    "id": event["node"]["app"]["id"],
+                    "name": event["node"]["app"]["name"],  # Corrected from id to name
+                },
+                "shop": {
+                    "id": event["node"]["shop"]["id"],
+                    "name": event["node"]["shop"]["name"],  # Corrected from id to name
+                },
+                "charge": {
+                    "id": event["node"]["charge"]["id"],
+                    "test": event["node"]["charge"]["test"],
+                    "name": event["node"]["charge"]["name"],
+                    "billingOn": event["node"]["charge"]["billingOn"],
+                    "amount": event["node"]["charge"]["amount"],
+                },
+            }
+
+
+class RelationshipInstalls(ShopifyPartnersRelationshipStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
 
     def request_body_json(
             self,
@@ -397,28 +459,93 @@ class RelationshipInstalls(ShopifyPartnersStream):
             stream_slice: Mapping[str, Any] = None,
             next_page_token: Mapping[str, Any] = None,
     ) -> MutableMapping[str, Any]:
-
         api = ShopifyPartnersAPI(self.api_key, self.api_version)
-        q, v = api.get_events_installs(self.application_id, 1, next_page_token)
-        return {'query': q, "variables": v}
+        q, v = api.get_events_installs(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
 
-    def parse_response(self, response: requests.Response, **kwargs):
-        response_data = response.json()
 
-        # Iterate over each event in the response and yield it
-        for event in response_data['data']['app']['events']['edges']:
-            yield {
-                "type": event['node']['type'],
-                "occurredAt": event['node']['occurredAt'],
-                "app": {
-                    "id": event['node']['app']['id'],
-                    "name": event['node']['app']['name']  # Corrected from id to name
-                },
-                "shop": {
-                    "id": event['node']['shop']['id'],
-                    "name": event['node']['shop']['name']  # Corrected from id to name
-                }
-            }
+class RelationshipUninstalls(ShopifyPartnersRelationshipStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
+
+    def request_body_json(
+            self,
+            stream_state: Mapping[str, Any],
+            stream_slice: Mapping[str, Any] = None,
+            next_page_token: Mapping[str, Any] = None,
+    ) -> MutableMapping[str, Any]:
+        api = ShopifyPartnersAPI(self.api_key, self.api_version)
+        q, v = api.get_events_uninstalls(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
+
+
+class RelationshipReactivated(ShopifyPartnersRelationshipStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
+
+    def request_body_json(
+            self,
+            stream_state: Mapping[str, Any],
+            stream_slice: Mapping[str, Any] = None,
+            next_page_token: Mapping[str, Any] = None,
+    ) -> MutableMapping[str, Any]:
+        api = ShopifyPartnersAPI(self.api_key, self.api_version)
+        q, v = api.get_events_reactivations(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
+
+
+class RelationshipDeactivated(ShopifyPartnersRelationshipStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
+
+    def request_body_json(
+            self,
+            stream_state: Mapping[str, Any],
+            stream_slice: Mapping[str, Any] = None,
+            next_page_token: Mapping[str, Any] = None,
+    ) -> MutableMapping[str, Any]:
+        api = ShopifyPartnersAPI(self.api_key, self.api_version)
+        q, v = api.get_events_deactivations(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
+
+
+class SubscriptionChargeAccepted(ShopifySubscriptionWithCostStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
+
+    def request_body_json(
+            self,
+            stream_state: Mapping[str, Any],
+            stream_slice: Mapping[str, Any] = None,
+            next_page_token: Mapping[str, Any] = None,
+    ) -> MutableMapping[str, Any]:
+        api = ShopifyPartnersAPI(self.api_key, self.api_version)
+        q, v = api.get_events_subscription_charge_activated(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
 
 
 # Basic incremental stream
@@ -442,7 +569,11 @@ class IncrementalShopifyPartnersStream(ShopifyPartnersStream, ABC):
         """
         return []
 
-    def get_updated_state(self, current_stream_state: MutableMapping[str, Any], latest_record: Mapping[str, Any]) -> Mapping[str, Any]:
+    def get_updated_state(
+            self,
+            current_stream_state: MutableMapping[str, Any],
+            latest_record: Mapping[str, Any],
+    ) -> Mapping[str, Any]:
         """
         Override to determine the latest state after reading the latest record. This typically compared the cursor_field from the latest record and
         the current state and picks the 'most' recent cursor. This is how a stream's state is determined. Required for incremental.
@@ -463,23 +594,35 @@ class SourceShopifyPartners(AbstractSource):
         """
 
         # # check to see that the config values are appropriate
-        api_key = config['api_key']
-        api_version = config['api_version']
-        partner_id = config['partner_id']
+        api_key = config["api_key"]
+        api_version = config["api_version"]
+        partner_id = config["partner_id"]
         application_id = f"gid://partners/App/{config['application_id']}"
 
         try:
+            # attempt to make a call to the endpoint
+            request_url = f"https://partners.shopify.com/{partner_id}/api/{api_version}/graphql.json"
+            headers = {
+                "X-Shopify-Access-Token": api_key,
+                "Content-Type": "application/json",
+            }
             api = ShopifyPartnersAPI(api_key, partner_id, api_version)
-            results = api.get_events_installs(application_id)
-            print(results)
-            if 'error' in results.keys():
+            q, v = api.get_events_installs(application_id, 1)
+            data = {"query": q, "variables": v}
+            response = requests.post(url=request_url, headers=headers, json=data)
+            results = response.json()
+
+            print("RESULTS", results)
+            if "error" in results.keys():
                 return False, f"{results['error']}"
 
-        except (requests.exceptions.RequestException, requests.exceptions.HTTPError) as e:
-            return False, f'Unable to connect to the shopify partners api :: {e}'
+        except (
+                requests.exceptions.RequestException,
+                requests.exceptions.HTTPError,
+        ) as e:
+            return False, f"Unable to connect to the shopify partners api :: {e}"
 
         return True, None
-
 
     def streams(self, config: Mapping[str, Any]) -> List[Stream]:
         """
@@ -489,4 +632,10 @@ class SourceShopifyPartners(AbstractSource):
         """
         # TODO remove the authenticator if not required.
         auth = NoAuth()
-        return [RelationshipInstalls(authenticator=auth, config=config)]
+        return [
+            RelationshipInstalls(authenticator=auth, config=config),
+            RelationshipUninstalls(authenticator=auth, config=config),
+            RelationshipReactivated(authenticator=auth, config=config),
+            RelationshipDeactivated(authenticator=auth, config=config),
+            SubscriptionChargeAccepted(authenticator=auth, config=config),
+        ]
