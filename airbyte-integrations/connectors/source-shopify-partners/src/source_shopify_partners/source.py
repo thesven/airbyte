@@ -371,11 +371,6 @@ class ShopifySubscriptionWithCostStream(ShopifyPartnersStream):
     To be used as a base class for all Subscription Streams w/ cost
     """
 
-    url_base = ""
-    application_id = ""
-    api_key = ""
-    api_version = ""
-
     primary_key = "occurredAt"
 
     def __init__(self, config: Mapping[str, Any], **kwargs):
@@ -562,6 +557,126 @@ class SubscriptionChargeAccepted(ShopifySubscriptionWithCostStream):
         return {"query": q, "variables": v}
 
 
+class SubscriptionChargeActivated(ShopifySubscriptionWithCostStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
+
+    def request_body_json(
+            self,
+            stream_state: Mapping[str, Any],
+            stream_slice: Mapping[str, Any] = None,
+            next_page_token: Mapping[str, Any] = None,
+    ) -> MutableMapping[str, Any]:
+        api = ShopifyPartnersAPI(self.api_key, self.api_version)
+        q, v = api.get_events_subscription_charge_activated(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
+
+
+class SubscriptionChargeCanceled(ShopifySubscriptionWithCostStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
+
+    def request_body_json(
+            self,
+            stream_state: Mapping[str, Any],
+            stream_slice: Mapping[str, Any] = None,
+            next_page_token: Mapping[str, Any] = None,
+    ) -> MutableMapping[str, Any]:
+        api = ShopifyPartnersAPI(self.api_key, self.api_version)
+        q, v = api.get_events_subscription_charge_canceled(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
+
+
+class SubscriptionChargeDeclined(ShopifySubscriptionWithCostStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
+
+    def request_body_json(
+            self,
+            stream_state: Mapping[str, Any],
+            stream_slice: Mapping[str, Any] = None,
+            next_page_token: Mapping[str, Any] = None,
+    ) -> MutableMapping[str, Any]:
+        api = ShopifyPartnersAPI(self.api_key, self.api_version)
+        q, v = api.get_events_subscription_charge_declined(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
+
+
+class SubscriptionChargeExpired(ShopifySubscriptionWithCostStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
+
+    def request_body_json(
+            self,
+            stream_state: Mapping[str, Any],
+            stream_slice: Mapping[str, Any] = None,
+            next_page_token: Mapping[str, Any] = None,
+    ) -> MutableMapping[str, Any]:
+        api = ShopifyPartnersAPI(self.api_key, self.api_version)
+        q, v = api.get_events_subscription_charge_expired(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
+
+
+class SubscriptionChargeFrozen(ShopifySubscriptionWithCostStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
+
+    def request_body_json(
+            self,
+            stream_state: Mapping[str, Any],
+            stream_slice: Mapping[str, Any] = None,
+            next_page_token: Mapping[str, Any] = None,
+    ) -> MutableMapping[str, Any]:
+        api = ShopifyPartnersAPI(self.api_key, self.api_version)
+        q, v = api.get_events_subscription_charge_frozen(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
+
+
+class SubscriptionChargeUnfrozen(ShopifySubscriptionWithCostStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
+
+    def request_body_json(
+            self,
+            stream_state: Mapping[str, Any],
+            stream_slice: Mapping[str, Any] = None,
+            next_page_token: Mapping[str, Any] = None,
+    ) -> MutableMapping[str, Any]:
+        api = ShopifyPartnersAPI(self.api_key, self.api_version)
+        q, v = api.get_events_subscription_charge_unfrozen(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
+
+
 # Basic incremental stream
 class IncrementalShopifyPartnersStream(ShopifyPartnersStream, ABC):
     """
@@ -652,4 +767,10 @@ class SourceShopifyPartners(AbstractSource):
             SubscriptionCappedAmountUpdated(authenticator=auth, config=config),
             SubscriptionApproachingCappedAmount(authenticator=auth, config=config),
             SubscriptionChargeAccepted(authenticator=auth, config=config),
+            SubscriptionChargeActivated(authenticator=auth, config=config),
+            SubscriptionChargeCanceled(authenticator=auth, config=config),
+            SubscriptionChargeDeclined(authenticator=auth, config=config),
+            SubscriptionChargeExpired(authenticator=auth, config=config),
+            SubscriptionChargeFrozen(authenticator=auth, config=config),
+            SubscriptionChargeUnfrozen(authenticator=auth, config=config),
         ]

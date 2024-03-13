@@ -520,6 +520,552 @@
       },
       "sync_mode" : "full_refresh",
       "destination_sync_mode" : "overwrite"
+    },
+    {
+      "stream" : {
+        "name" : "subscription_charge_activated",
+        "json_schema" : {
+          "$schema" : "http://json-schema.org/draft-04/schema#",
+          "type" : "object",
+          "properties" : {
+            "events" : {
+              "type" : [
+                "null",
+                "array"
+              ],
+              "items" : {
+                "type" : [
+                  "null",
+                  "object"
+                ],
+                "properties" : {
+                  "event_type" : {
+                    "type" : "string"
+                  },
+                  "occurredAt" : {
+                    "type" : [
+                      "null",
+                      "string"
+                    ],
+                    "format" : "date-time"
+                  },
+                  "app" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      }
+                    }
+                  },
+                  "shop" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      }
+                    }
+                  },
+                  "charge" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "test" : {
+                        "type" : "boolean"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      },
+                      "billingOn" : {
+                        "type" : "string",
+                        "format" : "date"
+                      },
+                      "amount" : {
+                        "type" : "object",
+                        "properties" : {
+                          "amount" : {
+                            "type" : "number"
+                          },
+                          "currencyCode" : {
+                            "type" : "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "supported_sync_modes" : [
+          "full_refresh"
+        ]
+      },
+      "sync_mode" : "full_refresh",
+      "destination_sync_mode" : "overwrite"
+    },
+    {
+      "stream" : {
+        "name" : "subscription_charge_canceled",
+        "json_schema" : {
+          "$schema" : "http://json-schema.org/draft-04/schema#",
+          "type" : "object",
+          "properties" : {
+            "events" : {
+              "type" : [
+                "null",
+                "array"
+              ],
+              "items" : {
+                "type" : [
+                  "null",
+                  "object"
+                ],
+                "properties" : {
+                  "event_type" : {
+                    "type" : "string"
+                  },
+                  "occurredAt" : {
+                    "type" : [
+                      "null",
+                      "string"
+                    ],
+                    "format" : "date-time"
+                  },
+                  "app" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      }
+                    }
+                  },
+                  "shop" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      }
+                    }
+                  },
+                  "charge" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "test" : {
+                        "type" : "boolean"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      },
+                      "billingOn" : {
+                        "type" : "string",
+                        "format" : "date"
+                      },
+                      "amount" : {
+                        "type" : "object",
+                        "properties" : {
+                          "amount" : {
+                            "type" : "number"
+                          },
+                          "currencyCode" : {
+                            "type" : "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "supported_sync_modes" : [
+          "full_refresh"
+        ]
+      },
+      "sync_mode" : "full_refresh",
+      "destination_sync_mode" : "overwrite"
+    },
+    {
+      "stream" : {
+        "name" : "subscription_charge_declined",
+        "json_schema" : {
+          "$schema" : "http://json-schema.org/draft-04/schema#",
+          "type" : "object",
+          "properties" : {
+            "events" : {
+              "type" : [
+                "null",
+                "array"
+              ],
+              "items" : {
+                "type" : [
+                  "null",
+                  "object"
+                ],
+                "properties" : {
+                  "event_type" : {
+                    "type" : "string"
+                  },
+                  "occurredAt" : {
+                    "type" : [
+                      "null",
+                      "string"
+                    ],
+                    "format" : "date-time"
+                  },
+                  "app" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      }
+                    }
+                  },
+                  "shop" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      }
+                    }
+                  },
+                  "charge" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "test" : {
+                        "type" : "boolean"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      },
+                      "billingOn" : {
+                        "type" : "string",
+                        "format" : "date"
+                      },
+                      "amount" : {
+                        "type" : "object",
+                        "properties" : {
+                          "amount" : {
+                            "type" : "number"
+                          },
+                          "currencyCode" : {
+                            "type" : "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "supported_sync_modes" : [
+          "full_refresh"
+        ]
+      },
+      "sync_mode" : "full_refresh",
+      "destination_sync_mode" : "overwrite"
+    },
+    {
+      "stream" : {
+        "name" : "subscription_charge_expired",
+        "json_schema" : {
+          "$schema" : "http://json-schema.org/draft-04/schema#",
+          "type" : "object",
+          "properties" : {
+            "events" : {
+              "type" : [
+                "null",
+                "array"
+              ],
+              "items" : {
+                "type" : [
+                  "null",
+                  "object"
+                ],
+                "properties" : {
+                  "event_type" : {
+                    "type" : "string"
+                  },
+                  "occurredAt" : {
+                    "type" : [
+                      "null",
+                      "string"
+                    ],
+                    "format" : "date-time"
+                  },
+                  "app" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      }
+                    }
+                  },
+                  "shop" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      }
+                    }
+                  },
+                  "charge" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "test" : {
+                        "type" : "boolean"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      },
+                      "billingOn" : {
+                        "type" : "string",
+                        "format" : "date"
+                      },
+                      "amount" : {
+                        "type" : "object",
+                        "properties" : {
+                          "amount" : {
+                            "type" : "number"
+                          },
+                          "currencyCode" : {
+                            "type" : "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "supported_sync_modes" : [
+          "full_refresh"
+        ]
+      },
+      "sync_mode" : "full_refresh",
+      "destination_sync_mode" : "overwrite"
+    },
+    {
+      "stream" : {
+        "name" : "subscription_charge_frozen",
+        "json_schema" : {
+          "$schema" : "http://json-schema.org/draft-04/schema#",
+          "type" : "object",
+          "properties" : {
+            "events" : {
+              "type" : [
+                "null",
+                "array"
+              ],
+              "items" : {
+                "type" : [
+                  "null",
+                  "object"
+                ],
+                "properties" : {
+                  "event_type" : {
+                    "type" : "string"
+                  },
+                  "occurredAt" : {
+                    "type" : [
+                      "null",
+                      "string"
+                    ],
+                    "format" : "date-time"
+                  },
+                  "app" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      }
+                    }
+                  },
+                  "shop" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      }
+                    }
+                  },
+                  "charge" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "test" : {
+                        "type" : "boolean"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      },
+                      "billingOn" : {
+                        "type" : "string",
+                        "format" : "date"
+                      },
+                      "amount" : {
+                        "type" : "object",
+                        "properties" : {
+                          "amount" : {
+                            "type" : "number"
+                          },
+                          "currencyCode" : {
+                            "type" : "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "supported_sync_modes" : [
+          "full_refresh"
+        ]
+      },
+      "sync_mode" : "full_refresh",
+      "destination_sync_mode" : "overwrite"
+    },
+    {
+      "stream" : {
+        "name" : "subscription_charge_unfrozen",
+        "json_schema" : {
+          "$schema" : "http://json-schema.org/draft-04/schema#",
+          "type" : "object",
+          "properties" : {
+            "events" : {
+              "type" : [
+                "null",
+                "array"
+              ],
+              "items" : {
+                "type" : [
+                  "null",
+                  "object"
+                ],
+                "properties" : {
+                  "event_type" : {
+                    "type" : "string"
+                  },
+                  "occurredAt" : {
+                    "type" : [
+                      "null",
+                      "string"
+                    ],
+                    "format" : "date-time"
+                  },
+                  "app" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      }
+                    }
+                  },
+                  "shop" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      }
+                    }
+                  },
+                  "charge" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "test" : {
+                        "type" : "boolean"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      },
+                      "billingOn" : {
+                        "type" : "string",
+                        "format" : "date"
+                      },
+                      "amount" : {
+                        "type" : "object",
+                        "properties" : {
+                          "amount" : {
+                            "type" : "number"
+                          },
+                          "currencyCode" : {
+                            "type" : "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "supported_sync_modes" : [
+          "full_refresh"
+        ]
+      },
+      "sync_mode" : "full_refresh",
+      "destination_sync_mode" : "overwrite"
     }
   ]
 }
