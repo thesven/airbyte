@@ -64,11 +64,6 @@ class ShopifyPartnersAPI:
             ...AppCredit
             }}
           }}
-          ... on AppPurchaseOneTimeEvent {{
-          charge {{
-            ...OneTimeChargeInfo
-            }}
-          }}
         }}
 
         fragment AppInfo on App {{
@@ -88,18 +83,6 @@ class ShopifyPartnersAPI:
         }}
 
         fragment ChargeInfo on AppSubscription {{
-            id
-            test
-            name
-            billingOn
-            amount {{
-                amount
-                currencyCode
-            }}
-
-        }}
-        
-        fragment OneTimeChargeInfo on AppPurchaseOneTime {{
             id
             test
             name
@@ -797,6 +780,86 @@ class CreditFailed(ShopifyCreditStream):
         return {"query": q, "variables": v}
 
 
+class OneTimeChargeAccepted(ShopifySubscriptionWithCostStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
+
+    def request_body_json(
+            self,
+            stream_state: Mapping[str, Any],
+            stream_slice: Mapping[str, Any] = None,
+            next_page_token: Mapping[str, Any] = None,
+    ) -> MutableMapping[str, Any]:
+        api = ShopifyPartnersAPI(self.api_key, self.api_version)
+        q, v = api.get_events_one_time_charge_accepted(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
+
+
+class OneTimeChargeExpired(ShopifySubscriptionWithCostStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
+
+    def request_body_json(
+            self,
+            stream_state: Mapping[str, Any],
+            stream_slice: Mapping[str, Any] = None,
+            next_page_token: Mapping[str, Any] = None,
+    ) -> MutableMapping[str, Any]:
+        api = ShopifyPartnersAPI(self.api_key, self.api_version)
+        q, v = api.get_events_one_time_charge_expired(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
+
+
+class OneTimeChargeActivated(ShopifySubscriptionWithCostStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
+
+    def request_body_json(
+            self,
+            stream_state: Mapping[str, Any],
+            stream_slice: Mapping[str, Any] = None,
+            next_page_token: Mapping[str, Any] = None,
+    ) -> MutableMapping[str, Any]:
+        api = ShopifyPartnersAPI(self.api_key, self.api_version)
+        q, v = api.get_events_one_time_charge_activated(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
+
+
+class OneTimeChargeDeclined(ShopifySubscriptionWithCostStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
+
+    def request_body_json(
+            self,
+            stream_state: Mapping[str, Any],
+            stream_slice: Mapping[str, Any] = None,
+            next_page_token: Mapping[str, Any] = None,
+    ) -> MutableMapping[str, Any]:
+        api = ShopifyPartnersAPI(self.api_key, self.api_version)
+        q, v = api.get_events_one_time_charge_declined(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
+
+
 # Basic incremental stream
 class IncrementalShopifyPartnersStream(ShopifyPartnersStream, ABC):
     """
@@ -897,4 +960,8 @@ class SourceShopifyPartners(AbstractSource):
             CreditApplied(authenticator=auth, config=config),
             CreditPending(authenticator=auth, config=config),
             CreditFailed(authenticator=auth, config=config),
+            OneTimeChargeAccepted(authenticator=auth, config=config),
+            OneTimeChargeActivated(authenticator=auth, config=config),
+            OneTimeChargeDeclined(authenticator=auth, config=config),
+            OneTimeChargeExpired(authenticator=auth, config=config),
         ]
