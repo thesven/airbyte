@@ -64,6 +64,11 @@ class ShopifyPartnersAPI:
             ...AppCredit
             }}
           }}
+          ... on AppPurchaseOneTimeEvent {{
+          charge {{
+            ...OneTimeChargeInfo
+            }}
+          }}
         }}
 
         fragment AppInfo on App {{
@@ -83,6 +88,18 @@ class ShopifyPartnersAPI:
         }}
 
         fragment ChargeInfo on AppSubscription {{
+            id
+            test
+            name
+            billingOn
+            amount {{
+                amount
+                currencyCode
+            }}
+
+        }}
+        
+        fragment OneTimeChargeInfo on AppPurchaseOneTime {{
             id
             test
             name
