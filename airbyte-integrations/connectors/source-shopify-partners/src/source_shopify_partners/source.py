@@ -215,21 +215,6 @@ class ShopifyPartnersAPI:
         return self._compose_query(app_id, event_types, first, after)
 
 
-"""
-TODO: Most comments in this class are instructive and should be deleted after the source is implemented.
-
-This file provides a stubbed example of how to use the Airbyte CDK to develop both a source connector which supports full refresh or and an
-incremental syncs from an HTTP API.
-
-The various TODOs are both implementation hints and steps - fulfilling all the TODOs should be sufficient to implement one basic and one incremental
-stream from a source. This pattern is the same one used by Airbyte internally to implement connectors.
-
-The approach here is not authoritative, and devs are free to use their own judgement.
-
-There are additional required TODOs in the files within the integration_tests folder and the spec.yaml file.
-"""
-
-
 # Basic full refresh stream
 class ShopifyPartnersStream(HttpStream, ABC):
     """
@@ -291,12 +276,19 @@ class ShopifyPartnersStream(HttpStream, ABC):
         )
         return prepared_request
 
+    def path(
+            self,
+            stream_state: Mapping[str, Any] = None,
+            stream_slice: Mapping[str, Any] = None,
+            next_page_token: Mapping[str, Any] = None,
+    ) -> str:
+        # we don't need to append anything for the path as it is a single endpoint we are dealing with
+        return ""
+
     def next_page_token(
             self, response: requests.Response
     ) -> Optional[Mapping[str, Any]]:
         """
-        TODO: Override this method to define a pagination strategy. If you will not be using pagination, no action is required - just return None.
-
         This method should return a Mapping (e.g: dict) containing whatever information required to make paginated requests. This dict is passed
         to most other methods in this class to help you form headers, request bodies, query params, etc..
 
@@ -343,15 +335,6 @@ class ShopifyPartnersRelationshipStream(ShopifyPartnersStream):
         self.application_id = f"gid://partners/App/{config['application_id']}"
         self.api_key = config["api_key"]
         self.api_version = config["api_version"]
-
-    def path(
-            self,
-            stream_state: Mapping[str, Any] = None,
-            stream_slice: Mapping[str, Any] = None,
-            next_page_token: Mapping[str, Any] = None,
-    ) -> str:
-        # we don't need to append anything for the path as it is a single endpoint we are dealing with
-        return ""
 
     def request_headers(
             self,
@@ -401,15 +384,6 @@ class ShopifySubscriptionWithCostStream(ShopifyPartnersStream):
         self.application_id = f"gid://partners/App/{config['application_id']}"
         self.api_key = config["api_key"]
         self.api_version = config["api_version"]
-
-    def path(
-            self,
-            stream_state: Mapping[str, Any] = None,
-            stream_slice: Mapping[str, Any] = None,
-            next_page_token: Mapping[str, Any] = None,
-    ) -> str:
-        # we don't need to append anything for the path as it is a single endpoint we are dealing with
-        return ""
 
     def request_headers(
             self,
@@ -528,6 +502,46 @@ class RelationshipDeactivated(ShopifyPartnersRelationshipStream):
         return {"query": q, "variables": v}
 
 
+class SubscriptionCappedAmountUpdated(ShopifySubscriptionWithCostStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
+
+    def request_body_json(
+            self,
+            stream_state: Mapping[str, Any],
+            stream_slice: Mapping[str, Any] = None,
+            next_page_token: Mapping[str, Any] = None,
+    ) -> MutableMapping[str, Any]:
+        api = ShopifyPartnersAPI(self.api_key, self.api_version)
+        q, v = api.get_events_subscription_capped_amount_updated(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
+
+
+class SubscriptionApproachingCappedAmount(ShopifySubscriptionWithCostStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
+
+    def request_body_json(
+            self,
+            stream_state: Mapping[str, Any],
+            stream_slice: Mapping[str, Any] = None,
+            next_page_token: Mapping[str, Any] = None,
+    ) -> MutableMapping[str, Any]:
+        api = ShopifyPartnersAPI(self.api_key, self.api_version)
+        q, v = api.get_events_subscription_approaching_capped_amount(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
+
+
 class SubscriptionChargeAccepted(ShopifySubscriptionWithCostStream):
     def __init__(self, config: Mapping[str, Any], **kwargs):
         super().__init__(config)
@@ -540,7 +554,7 @@ class SubscriptionChargeAccepted(ShopifySubscriptionWithCostStream):
             next_page_token: Mapping[str, Any] = None,
     ) -> MutableMapping[str, Any]:
         api = ShopifyPartnersAPI(self.api_key, self.api_version)
-        q, v = api.get_events_subscription_charge_activated(
+        q, v = api.get_events_subscription_charge_accepted(
             self.application_id,
             int(self.config["num_results_per_call"]),
             next_page_token,
@@ -607,12 +621,13 @@ class SourceShopifyPartners(AbstractSource):
                 "Content-Type": "application/json",
             }
             api = ShopifyPartnersAPI(api_key, partner_id, api_version)
-            q, v = api.get_events_installs(application_id, 1)
+            q, v = api.get_events_installs(
+                application_id, int(config["num_results_per_call"])
+            )
             data = {"query": q, "variables": v}
             response = requests.post(url=request_url, headers=headers, json=data)
             results = response.json()
 
-            print("RESULTS", results)
             if "error" in results.keys():
                 return False, f"{results['error']}"
 
@@ -637,5 +652,7 @@ class SourceShopifyPartners(AbstractSource):
             RelationshipUninstalls(authenticator=auth, config=config),
             RelationshipReactivated(authenticator=auth, config=config),
             RelationshipDeactivated(authenticator=auth, config=config),
+            SubscriptionCappedAmountUpdated(authenticator=auth, config=config),
+            SubscriptionApproachingCappedAmount(authenticator=auth, config=config),
             SubscriptionChargeAccepted(authenticator=auth, config=config),
         ]
