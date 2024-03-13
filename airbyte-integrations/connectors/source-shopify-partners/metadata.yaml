@@ -22,10 +22,10 @@ data:
   dockerImageTag: 0.1.0
   dockerRepository: airbyte/source-shopify-partners
   githubIssueLabel: source-shopify-partners
-  icon: shopify-partners.svg
+  icon: shopify.svg
   license: MIT
   name: Shopify Partners
-  releaseDate: TODO
+  releaseDate: 2999-04-29
   supportLevel: community
   releaseStage: alpha
   documentationUrl: https://docs.airbyte.com/integrations/sources/shopify-partners

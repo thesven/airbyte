@@ -641,11 +641,8 @@ class SourceShopifyPartners(AbstractSource):
 
     def streams(self, config: Mapping[str, Any]) -> List[Stream]:
         """
-        TODO: Replace the streams below with your own streams.
-
         :param config: A Mapping of the user input configuration as defined in the connector spec.
         """
-        # TODO remove the authenticator if not required.
         auth = NoAuth()
         return [
             RelationshipInstalls(authenticator=auth, config=config),

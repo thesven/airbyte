@@ -312,7 +312,7 @@
                       },
                       "billingOn" : {
                         "type" : "string",
-                        "format" : "date-time"
+                        "format" : "date"
                       },
                       "amount" : {
                         "type" : "object",
@@ -403,7 +403,7 @@
                       },
                       "billingOn" : {
                         "type" : "string",
-                        "format" : "date-time"
+                        "format" : "date"
                       },
                       "amount" : {
                         "type" : "object",
@@ -494,7 +494,7 @@
                       },
                       "billingOn" : {
                         "type" : "string",
-                        "format" : "date-time"
+                        "format" : "date"
                       },
                       "amount" : {
                         "type" : "object",
