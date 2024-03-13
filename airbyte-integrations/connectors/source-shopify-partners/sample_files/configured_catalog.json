@@ -1066,6 +1066,358 @@
       },
       "sync_mode" : "full_refresh",
       "destination_sync_mode" : "overwrite"
+    },
+    {
+      "stream" : {
+        "name" : "usage_charge_applied",
+        "json_schema" : {
+          "$schema" : "http://json-schema.org/draft-04/schema#",
+          "type" : "object",
+          "properties" : {
+            "events" : {
+              "type" : [
+                "null",
+                "array"
+              ],
+              "items" : {
+                "type" : [
+                  "null",
+                  "object"
+                ],
+                "properties" : {
+                  "event_type" : {
+                    "type" : "string"
+                  },
+                  "occurredAt" : {
+                    "type" : [
+                      "null",
+                      "string"
+                    ],
+                    "format" : "date-time"
+                  },
+                  "app" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      }
+                    }
+                  },
+                  "shop" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      }
+                    }
+                  },
+                  "charge" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "test" : {
+                        "type" : "boolean"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      },
+                      "billingOn" : {
+                        "type" : "string",
+                        "format" : "date"
+                      },
+                      "amount" : {
+                        "type" : "object",
+                        "properties" : {
+                          "amount" : {
+                            "type" : "number"
+                          },
+                          "currencyCode" : {
+                            "type" : "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "supported_sync_modes" : [
+          "full_refresh"
+        ]
+      },
+      "sync_mode" : "full_refresh",
+      "destination_sync_mode" : "overwrite"
+    },
+    {
+      "stream" : {
+        "name" : "credit_applied",
+        "json_schema" : {
+          "$schema" : "http://json-schema.org/draft-04/schema#",
+          "type" : "object",
+          "properties" : {
+            "events" : {
+              "type" : [
+                "null",
+                "array"
+              ],
+              "items" : {
+                "type" : [
+                  "null",
+                  "object"
+                ],
+                "properties" : {
+                  "event_type" : {
+                    "type" : "string"
+                  },
+                  "occurredAt" : {
+                    "type" : [
+                      "null",
+                      "string"
+                    ],
+                    "format" : "date-time"
+                  },
+                  "app" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      }
+                    }
+                  },
+                  "shop" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      }
+                    }
+                  },
+                  "appCredit" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "test" : {
+                        "type" : "boolean"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      },
+                      "amount" : {
+                        "type" : "object",
+                        "properties" : {
+                          "amount" : {
+                            "type" : "number"
+                          },
+                          "currencyCode" : {
+                            "type" : "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "supported_sync_modes" : [
+          "full_refresh"
+        ]
+      },
+      "sync_mode" : "full_refresh",
+      "destination_sync_mode" : "overwrite"
+    },
+    {
+      "stream" : {
+        "name" : "credit_pending",
+        "json_schema" : {
+          "$schema" : "http://json-schema.org/draft-04/schema#",
+          "type" : "object",
+          "properties" : {
+            "events" : {
+              "type" : [
+                "null",
+                "array"
+              ],
+              "items" : {
+                "type" : [
+                  "null",
+                  "object"
+                ],
+                "properties" : {
+                  "event_type" : {
+                    "type" : "string"
+                  },
+                  "occurredAt" : {
+                    "type" : [
+                      "null",
+                      "string"
+                    ],
+                    "format" : "date-time"
+                  },
+                  "app" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      }
+                    }
+                  },
+                  "shop" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      }
+                    }
+                  },
+                  "appCredit" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "test" : {
+                        "type" : "boolean"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      },
+                      "amount" : {
+                        "type" : "object",
+                        "properties" : {
+                          "amount" : {
+                            "type" : "number"
+                          },
+                          "currencyCode" : {
+                            "type" : "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "supported_sync_modes" : [
+          "full_refresh"
+        ]
+      },
+      "sync_mode" : "full_refresh",
+      "destination_sync_mode" : "overwrite"
+    },
+    {
+      "stream" : {
+        "name" : "credit_failed",
+        "json_schema" : {
+          "$schema" : "http://json-schema.org/draft-04/schema#",
+          "type" : "object",
+          "properties" : {
+            "events" : {
+              "type" : [
+                "null",
+                "array"
+              ],
+              "items" : {
+                "type" : [
+                  "null",
+                  "object"
+                ],
+                "properties" : {
+                  "event_type" : {
+                    "type" : "string"
+                  },
+                  "occurredAt" : {
+                    "type" : [
+                      "null",
+                      "string"
+                    ],
+                    "format" : "date-time"
+                  },
+                  "app" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      }
+                    }
+                  },
+                  "shop" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      }
+                    }
+                  },
+                  "appCredit" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "test" : {
+                        "type" : "boolean"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      },
+                      "amount" : {
+                        "type" : "object",
+                        "properties" : {
+                          "amount" : {
+                            "type" : "number"
+                          },
+                          "currencyCode" : {
+                            "type" : "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "supported_sync_modes" : [
+          "full_refresh"
+        ]
+      },
+      "sync_mode" : "full_refresh",
+      "destination_sync_mode" : "overwrite"
     }
   ]
 }

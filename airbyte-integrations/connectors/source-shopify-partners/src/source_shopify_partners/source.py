@@ -243,6 +243,13 @@ class ShopifyPartnersStream(HttpStream, ABC):
 
     url_base = "https://partners.shopify.com"
 
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__()
+        self.url_base = f"https://partners.shopify.com/{config['partner_id']}/api/{config['api_version']}/graphql.json"
+        self.application_id = f"gid://partners/App/{config['application_id']}"
+        self.api_key = config["api_key"]
+        self.api_version = config["api_version"]
+
     def _create_prepared_request(
             self,
             path: str,
@@ -284,6 +291,17 @@ class ShopifyPartnersStream(HttpStream, ABC):
     ) -> str:
         # we don't need to append anything for the path as it is a single endpoint we are dealing with
         return ""
+
+    def request_headers(
+            self,
+            stream_state: Mapping[str, Any],
+            stream_slice: Mapping[str, Any] = None,
+            next_page_token: Mapping[str, Any] = None,
+    ) -> Mapping[str, Any]:
+        return {
+            "X-Shopify-Access-Token": self.api_key,
+            "Content-Type": "application/json",
+        }
 
     def next_page_token(
             self, response: requests.Response
@@ -330,22 +348,7 @@ class ShopifyPartnersRelationshipStream(ShopifyPartnersStream):
     primary_key = "occurredAt"
 
     def __init__(self, config: Mapping[str, Any], **kwargs):
-        super().__init__()
-        self.url_base = f"https://partners.shopify.com/{config['partner_id']}/api/{config['api_version']}/graphql.json"
-        self.application_id = f"gid://partners/App/{config['application_id']}"
-        self.api_key = config["api_key"]
-        self.api_version = config["api_version"]
-
-    def request_headers(
-            self,
-            stream_state: Mapping[str, Any],
-            stream_slice: Mapping[str, Any] = None,
-            next_page_token: Mapping[str, Any] = None,
-    ) -> Mapping[str, Any]:
-        return {
-            "X-Shopify-Access-Token": self.api_key,
-            "Content-Type": "application/json",
-        }
+        super().__init__(config)
 
     def parse_response(self, response: requests.Response, **kwargs):
         response_data = response.json()
@@ -374,22 +377,7 @@ class ShopifySubscriptionWithCostStream(ShopifyPartnersStream):
     primary_key = "occurredAt"
 
     def __init__(self, config: Mapping[str, Any], **kwargs):
-        super().__init__()
-        self.url_base = f"https://partners.shopify.com/{config['partner_id']}/api/{config['api_version']}/graphql.json"
-        self.application_id = f"gid://partners/App/{config['application_id']}"
-        self.api_key = config["api_key"]
-        self.api_version = config["api_version"]
-
-    def request_headers(
-            self,
-            stream_state: Mapping[str, Any],
-            stream_slice: Mapping[str, Any] = None,
-            next_page_token: Mapping[str, Any] = None,
-    ) -> Mapping[str, Any]:
-        return {
-            "X-Shopify-Access-Token": self.api_key,
-            "Content-Type": "application/json",
-        }
+        super().__init__(config)
 
     def parse_response(self, response: requests.Response, **kwargs):
         response_data = response.json()
@@ -412,6 +400,41 @@ class ShopifySubscriptionWithCostStream(ShopifyPartnersStream):
                     "test": event["node"]["charge"]["test"],
                     "name": event["node"]["charge"]["name"],
                     "billingOn": event["node"]["charge"]["billingOn"],
+                    "amount": event["node"]["charge"]["amount"],
+                },
+            }
+
+
+class ShopifyCreditStream(ShopifyPartnersStream):
+    """
+    To be used as a base class for all Credit Streams
+    """
+
+    primary_key = "occurredAt"
+
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+
+    def parse_response(self, response: requests.Response, **kwargs):
+        response_data = response.json()
+
+        # Iterate over each event in the response and yield it
+        for event in response_data["data"]["app"]["events"]["edges"]:
+            yield {
+                "type": event["node"]["type"],
+                "occurredAt": event["node"]["occurredAt"],
+                "app": {
+                    "id": event["node"]["app"]["id"],
+                    "name": event["node"]["app"]["name"],  # Corrected from id to name
+                },
+                "shop": {
+                    "id": event["node"]["shop"]["id"],
+                    "name": event["node"]["shop"]["name"],  # Corrected from id to name
+                },
+                "appCredit": {
+                    "id": event["node"]["charge"]["id"],
+                    "test": event["node"]["charge"]["test"],
+                    "name": event["node"]["charge"]["name"],
                     "amount": event["node"]["charge"]["amount"],
                 },
             }
@@ -677,6 +700,86 @@ class SubscriptionChargeUnfrozen(ShopifySubscriptionWithCostStream):
         return {"query": q, "variables": v}
 
 
+class UsageChargeApplied(ShopifySubscriptionWithCostStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
+
+    def request_body_json(
+            self,
+            stream_state: Mapping[str, Any],
+            stream_slice: Mapping[str, Any] = None,
+            next_page_token: Mapping[str, Any] = None,
+    ) -> MutableMapping[str, Any]:
+        api = ShopifyPartnersAPI(self.api_key, self.api_version)
+        q, v = api.get_events_usage_charge_applied(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
+
+
+class CreditApplied(ShopifyCreditStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
+
+    def request_body_json(
+            self,
+            stream_state: Mapping[str, Any],
+            stream_slice: Mapping[str, Any] = None,
+            next_page_token: Mapping[str, Any] = None,
+    ) -> MutableMapping[str, Any]:
+        api = ShopifyPartnersAPI(self.api_key, self.api_version)
+        q, v = api.get_events_credit_applied(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
+
+
+class CreditPending(ShopifyCreditStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
+
+    def request_body_json(
+            self,
+            stream_state: Mapping[str, Any],
+            stream_slice: Mapping[str, Any] = None,
+            next_page_token: Mapping[str, Any] = None,
+    ) -> MutableMapping[str, Any]:
+        api = ShopifyPartnersAPI(self.api_key, self.api_version)
+        q, v = api.get_events_credit_pending(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
+
+
+class CreditFailed(ShopifyCreditStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
+
+    def request_body_json(
+            self,
+            stream_state: Mapping[str, Any],
+            stream_slice: Mapping[str, Any] = None,
+            next_page_token: Mapping[str, Any] = None,
+    ) -> MutableMapping[str, Any]:
+        api = ShopifyPartnersAPI(self.api_key, self.api_version)
+        q, v = api.get_events_credit_failed(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
+
+
 # Basic incremental stream
 class IncrementalShopifyPartnersStream(ShopifyPartnersStream, ABC):
     """
@@ -773,4 +876,8 @@ class SourceShopifyPartners(AbstractSource):
             SubscriptionChargeExpired(authenticator=auth, config=config),
             SubscriptionChargeFrozen(authenticator=auth, config=config),
             SubscriptionChargeUnfrozen(authenticator=auth, config=config),
+            UsageChargeApplied(authenticator=auth, config=config),
+            CreditApplied(authenticator=auth, config=config),
+            CreditPending(authenticator=auth, config=config),
+            CreditFailed(authenticator=auth, config=config),
         ]
