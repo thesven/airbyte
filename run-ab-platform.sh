@@ -1,6 +1,10 @@
 #!/bin/bash
 
+<<<<<<< HEAD
 VERSION=0.52.1
+=======
+VERSION=0.53.0
+>>>>>>> upstream/master
 # Run away from anything even a little scary
 set -o nounset # -u exit if a variable is not set
 set -o errexit # -f exit for any command failure"
