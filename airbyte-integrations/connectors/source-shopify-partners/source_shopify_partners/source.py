@@ -345,7 +345,7 @@ class ShopifyPartnersRelationshipStream(ShopifyPartnersStream):
     api_key = ""
     api_version = ""
 
-    primary_key = "occurredAt"
+    primary_key = None
 
     def __init__(self, config: Mapping[str, Any], **kwargs):
         super().__init__(config)
@@ -356,15 +356,15 @@ class ShopifyPartnersRelationshipStream(ShopifyPartnersStream):
         # Iterate over each event in the response and yield it
         for event in response_data["data"]["app"]["events"]["edges"]:
             yield {
-                "type": event["node"]["type"],
+                "event_type": event["node"]["type"],  # Adjusted key to match schema
                 "occurredAt": event["node"]["occurredAt"],
                 "app": {
                     "id": event["node"]["app"]["id"],
-                    "name": event["node"]["app"]["name"],  # Corrected from id to name
+                    "name": event["node"]["app"]["name"],
                 },
                 "shop": {
                     "id": event["node"]["shop"]["id"],
-                    "name": event["node"]["shop"]["name"],  # Corrected from id to name
+                    "name": event["node"]["shop"]["name"],
                 },
             }
 
@@ -374,7 +374,7 @@ class ShopifySubscriptionWithCostStream(ShopifyPartnersStream):
     To be used as a base class for all Subscription Streams w/ cost
     """
 
-    primary_key = "occurredAt"
+    primary_key = None
 
     def __init__(self, config: Mapping[str, Any], **kwargs):
         super().__init__(config)
@@ -410,7 +410,7 @@ class ShopifyCreditStream(ShopifyPartnersStream):
     To be used as a base class for all Credit Streams
     """
 
-    primary_key = "occurredAt"
+    primary_key = None
 
     def __init__(self, config: Mapping[str, Any], **kwargs):
         super().__init__(config)
@@ -947,21 +947,21 @@ class SourceShopifyPartners(AbstractSource):
             RelationshipUninstalls(authenticator=auth, config=config),
             RelationshipReactivated(authenticator=auth, config=config),
             RelationshipDeactivated(authenticator=auth, config=config),
-            SubscriptionCappedAmountUpdated(authenticator=auth, config=config),
-            SubscriptionApproachingCappedAmount(authenticator=auth, config=config),
-            SubscriptionChargeAccepted(authenticator=auth, config=config),
-            SubscriptionChargeActivated(authenticator=auth, config=config),
-            SubscriptionChargeCanceled(authenticator=auth, config=config),
-            SubscriptionChargeDeclined(authenticator=auth, config=config),
-            SubscriptionChargeExpired(authenticator=auth, config=config),
-            SubscriptionChargeFrozen(authenticator=auth, config=config),
-            SubscriptionChargeUnfrozen(authenticator=auth, config=config),
-            UsageChargeApplied(authenticator=auth, config=config),
-            CreditApplied(authenticator=auth, config=config),
-            CreditPending(authenticator=auth, config=config),
-            CreditFailed(authenticator=auth, config=config),
-            OneTimeChargeAccepted(authenticator=auth, config=config),
-            OneTimeChargeActivated(authenticator=auth, config=config),
-            OneTimeChargeDeclined(authenticator=auth, config=config),
-            OneTimeChargeExpired(authenticator=auth, config=config),
+            # SubscriptionCappedAmountUpdated(authenticator=auth, config=config),
+            # SubscriptionApproachingCappedAmount(authenticator=auth, config=config),
+            # SubscriptionChargeAccepted(authenticator=auth, config=config),
+            # SubscriptionChargeActivated(authenticator=auth, config=config),
+            # SubscriptionChargeCanceled(authenticator=auth, config=config),
+            # SubscriptionChargeDeclined(authenticator=auth, config=config),
+            # SubscriptionChargeExpired(authenticator=auth, config=config),
+            # SubscriptionChargeFrozen(authenticator=auth, config=config),
+            # SubscriptionChargeUnfrozen(authenticator=auth, config=config),
+            # UsageChargeApplied(authenticator=auth, config=config),
+            # CreditApplied(authenticator=auth, config=config),
+            # CreditPending(authenticator=auth, config=config),
+            # CreditFailed(authenticator=auth, config=config),
+            # OneTimeChargeAccepted(authenticator=auth, config=config),
+            # OneTimeChargeActivated(authenticator=auth, config=config),
+            # OneTimeChargeDeclined(authenticator=auth, config=config),
+            # OneTimeChargeExpired(authenticator=auth, config=config),
         ]
