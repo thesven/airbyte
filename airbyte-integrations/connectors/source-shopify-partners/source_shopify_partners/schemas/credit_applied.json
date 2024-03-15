@@ -2,75 +2,43 @@
   "$schema" : "http://json-schema.org/draft-07/schema#",
   "type" : "object",
   "properties" : {
-    "events" : {
-      "type" : [
-        "null",
-        "array"
-      ],
-      "items" : {
+    "properties" : {
+      "event_type" : {
+        "type" : "string"
+      },
+      "occurredAt" : {
         "type" : [
           "null",
-          "object"
+          "string"
         ],
-        "properties" : {
-          "event_type" : {
-            "type" : "string"
-          },
-          "occurredAt" : {
-            "type" : [
-              "null",
-              "string"
-            ],
-            "format" : "date-time"
-          },
-          "app" : {
-            "type" : "object",
-            "properties" : {
-              "id" : {
-                "type" : "string"
-              },
-              "name" : {
-                "type" : "string"
-              }
-            }
-          },
-          "shop" : {
-            "type" : "object",
-            "properties" : {
-              "id" : {
-                "type" : "string"
-              },
-              "name" : {
-                "type" : "string"
-              }
-            }
-          },
-          "appCredit" : {
-            "type" : "object",
-            "properties" : {
-              "id" : {
-                "type" : "string"
-              },
-              "test" : {
-                "type" : "boolean"
-              },
-              "name" : {
-                "type" : "string"
-              },
-              "amount" : {
-                "type" : "object",
-                "properties" : {
-                  "amount" : {
-                    "type" : "number"
-                  },
-                  "currencyCode" : {
-                    "type" : "string"
-                  }
-                }
-              }
-            }
-          }
-        }
+        "format" : "date-time"
+      },
+      "app_id" : {
+        "type" : "string"
+      },
+      "app_name" : {
+        "type" : "string"
+      },
+      "shop_id" : {
+        "type" : "string"
+      },
+      "shop_name" : {
+        "type" : "string"
+      },
+      "app_credit_id" : {
+        "type" : "string"
+      },
+      "app_credit_test" : {
+        "type" : "boolean"
+      },
+      "app_credit_name" : {
+        "type" : "string"
+      },
+      "app_credit_amount" : {
+        "type" : "number"
+      },
+      "app_credit_currency_code" : {
+        "type" : "string"
       }
     }
   }
