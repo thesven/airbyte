@@ -5,4 +5,6 @@
 
 from .source import SourceShopifyPartners
 
-__all__ = ["SourceShopifyPartners"]
+__all__ = [
+    "SourceShopifyPartners",
+]

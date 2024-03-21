@@ -10,14 +10,209 @@ from airbyte_cdk.sources.streams import Stream
 from airbyte_cdk.sources.streams.http import HttpStream
 from airbyte_cdk.sources.streams.http.auth import NoAuth
 
-from credit_streams import CreditFailed, CreditApplied, CreditPending
-from partners_api import ShopifyPartnersAPI
-from releationship_streams import (
-    RelationshipInstalls,
-    RelationshipUninstalls,
-    RelationshipDeactivated,
-    RelationshipReactivated,
-)
+
+class ShopifyPartnersAPI:
+    def __init__(
+        self,
+        partners_api_key: str,
+        partners_organization_id: str,
+        partners_api_version: str = "2024-01",
+    ):
+        self.partners_api_key = partners_api_key
+        self.partners_organization_id = partners_organization_id
+        self.partners_api_version = partners_api_version
+
+    def _compose_query(
+        self, app_id: str, event_types: list, first: int = 10, after: str = None
+    ):
+        types_fragment = "[" + ", ".join(f"{type_}" for type_ in event_types) + "]"
+
+        query = f"""
+        query GetAppEvents($appId: ID!, $first: Int!, $after: String) {{
+          app(id: $appId) {{
+            events(first: $first, after: $after, types: {types_fragment}) {{
+              pageInfo {{
+                hasNextPage
+                hasPreviousPage
+              }}
+              edges {{
+                cursor
+                node {{
+                  ...EventDetails
+                }}
+              }}
+            }}
+          }}
+        }}
+
+        fragment EventDetails on AppEvent {{
+          type
+          occurredAt
+          app {{
+            ...AppInfo
+          }}
+          shop {{
+            ...ShopInfo
+          }}
+          ... on AppSubscriptionEvent {{
+          charge {{
+            ...ChargeInfo
+            }}
+          }}
+          ... on AppCreditEvent {{
+            appCredit {{
+            ...AppCredit
+            }}
+          }}
+        }}
+
+        fragment AppInfo on App {{
+          id
+          name
+        }}
+
+        fragment ShopInfo on Shop {{
+          id
+          name
+        }}
+
+        fragment AppCredit on AppCredit {{
+            id
+            name
+            test
+        }}
+
+        fragment ChargeInfo on AppSubscription {{
+            id
+            test
+            name
+            billingOn
+            amount {{
+                amount
+                currencyCode
+            }}
+
+        }}
+        """
+        variables = {"appId": app_id, "first": first, "after": after}
+        return query, variables
+
+    # Adding all original methods, specifying whether to include charge information
+    def get_events_installs(self, app_id: str, first: int = 10, after: str = None):
+        event_types = ["RELATIONSHIP_INSTALLED"]
+        return self._compose_query(app_id, event_types, first, after)
+
+    def get_events_uninstalls(self, app_id: str, first: int = 10, after: str = None):
+        event_types = ["RELATIONSHIP_UNINSTALLED"]
+        return self._compose_query(app_id, event_types, first, after)
+
+    def get_events_deactivations(self, app_id: str, first: int = 10, after: str = None):
+        event_types = ["RELATIONSHIP_DEACTIVATED"]
+        return self._compose_query(app_id, event_types, first, after)
+
+    def get_events_reactivations(self, app_id: str, first: int = 10, after: str = None):
+        event_types = ["RELATIONSHIP_REACTIVATED"]
+        return self._compose_query(app_id, event_types, first, after)
+
+    def get_events_subscription_approaching_capped_amount(
+        self, app_id: str, first: int = 10, after: str = None
+    ):
+        event_types = ["SUBSCRIPTION_APPROACHING_CAPPED_AMOUNT"]
+        return self._compose_query(app_id, event_types, first, after)
+
+    def get_events_subscription_capped_amount_updated(
+        self, app_id: str, first: int = 10, after: str = None
+    ):
+        event_types = ["SUBSCRIPTION_CAPPED_AMOUNT_UPDATED"]
+        return self._compose_query(app_id, event_types, first, after)
+
+    def get_events_subscription_charge_accepted(
+        self, app_id: str, first: int = 10, after: str = None
+    ):
+        event_types = ["SUBSCRIPTION_CHARGE_ACCEPTED"]
+        return self._compose_query(app_id, event_types, first, after)
+
+    def get_events_subscription_charge_activated(
+        self, app_id: str, first: int = 10, after: str = None
+    ):
+        event_types = ["SUBSCRIPTION_CHARGE_ACTIVATED"]
+        return self._compose_query(app_id, event_types, first, after)
+
+    def get_events_subscription_charge_canceled(
+        self, app_id: str, first: int = 10, after: str = None
+    ):
+        event_types = ["SUBSCRIPTION_CHARGE_CANCELED"]
+        return self._compose_query(app_id, event_types, first, after)
+
+    def get_events_subscription_charge_declined(
+        self, app_id: str, first: int = 10, after: str = None
+    ):
+        event_types = ["SUBSCRIPTION_CHARGE_DECLINED"]
+        return self._compose_query(app_id, event_types, first, after)
+
+    def get_events_subscription_charge_expired(
+        self, app_id: str, first: int = 10, after: str = None
+    ):
+        event_types = ["SUBSCRIPTION_CHARGE_EXPIRED"]
+        return self._compose_query(app_id, event_types, first, after)
+
+    def get_events_subscription_charge_frozen(
+        self, app_id: str, first: int = 10, after: str = None
+    ):
+        event_types = ["SUBSCRIPTION_CHARGE_FROZEN"]
+        return self._compose_query(app_id, event_types, first, after)
+
+    def get_events_subscription_charge_unfrozen(
+        self, app_id: str, first: int = 10, after: str = None
+    ):
+        event_types = ["SUBSCRIPTION_CHARGE_UNFROZEN"]
+        return self._compose_query(app_id, event_types, first, after)
+
+    def get_events_credit_applied(
+        self, app_id: str, first: int = 10, after: str = None
+    ):
+        event_types = ["CREDIT_APPLIED"]
+        return self._compose_query(app_id, event_types, first, after)
+
+    def get_events_credit_failed(self, app_id: str, first: int = 10, after: str = None):
+        event_types = ["CREDIT_FAILED"]
+        return self._compose_query(app_id, event_types, first, after)
+
+    def get_events_credit_pending(
+        self, app_id: str, first: int = 10, after: str = None
+    ):
+        event_types = ["CREDIT_PENDING"]
+        return self._compose_query(app_id, event_types, first, after)
+
+    def get_events_one_time_charge_accepted(
+        self, app_id: str, first: int = 10, after: str = None
+    ):
+        event_types = ["ONE_TIME_CHARGE_ACCEPTED"]
+        return self._compose_query(app_id, event_types, first, after)
+
+    def get_events_one_time_charge_activated(
+        self, app_id: str, first: int = 10, after: str = None
+    ):
+        event_types = ["ONE_TIME_CHARGE_ACTIVATED"]
+        return self._compose_query(app_id, event_types, first, after)
+
+    def get_events_one_time_charge_declined(
+        self, app_id: str, first: int = 10, after: str = None
+    ):
+        event_types = ["ONE_TIME_CHARGE_DECLINED"]
+        return self._compose_query(app_id, event_types, first, after)
+
+    def get_events_one_time_charge_expired(
+        self, app_id: str, first: int = 10, after: str = None
+    ):
+        event_types = ["ONE_TIME_CHARGE_EXPIRED"]
+        return self._compose_query(app_id, event_types, first, after)
+
+    def get_events_usage_charge_applied(
+        self, app_id: str, first: int = 10, after: str = None
+    ):
+        event_types = ["USAGE_CHARGE_APPLIED"]
+        return self._compose_query(app_id, event_types, first, after)
 
 
 # Basic full refresh stream
@@ -56,12 +251,12 @@ class ShopifyPartnersStream(HttpStream, ABC):
         self.api_version = config["api_version"]
 
     def _create_prepared_request(
-            self,
-            path: str,
-            headers: Optional[Mapping[str, str]] = None,
-            params: Optional[Mapping[str, str]] = None,
-            json: Optional[Mapping[str, Any]] = None,
-            data: Optional[Union[str, Mapping[str, Any]]] = None,
+        self,
+        path: str,
+        headers: Optional[Mapping[str, str]] = None,
+        params: Optional[Mapping[str, str]] = None,
+        json: Optional[Mapping[str, Any]] = None,
+        data: Optional[Union[str, Mapping[str, Any]]] = None,
     ) -> requests.PreparedRequest:
         url = self._join_url(self.url_base, path)
         if self.must_deduplicate_query_params():
@@ -89,19 +284,19 @@ class ShopifyPartnersStream(HttpStream, ABC):
         return prepared_request
 
     def path(
-            self,
-            stream_state: Mapping[str, Any] = None,
-            stream_slice: Mapping[str, Any] = None,
-            next_page_token: Mapping[str, Any] = None,
+        self,
+        stream_state: Mapping[str, Any] = None,
+        stream_slice: Mapping[str, Any] = None,
+        next_page_token: Mapping[str, Any] = None,
     ) -> str:
         # we don't need to append anything for the path as it is a single endpoint we are dealing with
         return ""
 
     def request_headers(
-            self,
-            stream_state: Mapping[str, Any],
-            stream_slice: Mapping[str, Any] = None,
-            next_page_token: Mapping[str, Any] = None,
+        self,
+        stream_state: Mapping[str, Any],
+        stream_slice: Mapping[str, Any] = None,
+        next_page_token: Mapping[str, Any] = None,
     ) -> Mapping[str, Any]:
         return {
             "X-Shopify-Access-Token": self.api_key,
@@ -109,7 +304,7 @@ class ShopifyPartnersStream(HttpStream, ABC):
         }
 
     def next_page_token(
-            self, response: requests.Response
+        self, response: requests.Response
     ) -> Optional[Mapping[str, Any]]:
         """
         This method should return a Mapping (e.g: dict) containing whatever information required to make paginated requests. This dict is passed
@@ -138,6 +333,208 @@ class ShopifyPartnersStream(HttpStream, ABC):
         Override if needed. See get_request_data/get_request_json if using POST/PUT/PATCH.
         """
         return "POST"
+
+
+class ShopifyCreditStream(ShopifyPartnersStream):
+    """
+    To be used as a base class for all Credit Streams
+    """
+
+    primary_key = None
+
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+
+    def parse_response(self, response: requests.Response, **kwargs):
+        response_data = response.json()
+
+        # Iterate over each event in the response and yield it
+        for event in response_data["data"]["app"]["events"]["edges"]:
+            yield {
+                "type": event["node"]["type"],
+                "occurredAt": event["node"]["occurredAt"],
+                "app_id": event["node"]["app"]["id"],
+                "app_name": event["node"]["app"]["name"],
+                "shop_id": event["node"]["shop"]["id"],
+                "shop_name": event["node"]["shop"]["name"],
+                "app_credit_id": event["node"]["charge"]["id"],
+                "app_credit_test": event["node"]["charge"]["test"],
+                "app_credit_name": event["node"]["charge"]["name"],
+                "app_credit_amount": event["node"]["charge"]["amount"]["amount"],
+                "app_credit_currency_code": event["node"]["charge"]["amount"][
+                    "currencyCode"
+                ],
+            }
+
+
+class CreditApplied(ShopifyCreditStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
+
+    def request_body_json(
+        self,
+        stream_state: Mapping[str, Any],
+        stream_slice: Mapping[str, Any] = None,
+        next_page_token: Mapping[str, Any] = None,
+    ) -> MutableMapping[str, Any]:
+        api = ShopifyPartnersAPI(self.api_key, self.api_version)
+        q, v = api.get_events_credit_applied(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
+
+
+class CreditPending(ShopifyCreditStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
+
+    def request_body_json(
+        self,
+        stream_state: Mapping[str, Any],
+        stream_slice: Mapping[str, Any] = None,
+        next_page_token: Mapping[str, Any] = None,
+    ) -> MutableMapping[str, Any]:
+        api = ShopifyPartnersAPI(self.api_key, self.api_version)
+        q, v = api.get_events_credit_pending(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
+
+
+class CreditFailed(ShopifyCreditStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
+
+    def request_body_json(
+        self,
+        stream_state: Mapping[str, Any],
+        stream_slice: Mapping[str, Any] = None,
+        next_page_token: Mapping[str, Any] = None,
+    ) -> MutableMapping[str, Any]:
+        api = ShopifyPartnersAPI(self.api_key, self.api_version)
+        q, v = api.get_events_credit_failed(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
+
+
+class ShopifyPartnersRelationshipStream(ShopifyPartnersStream):
+    """
+    To be used as a base class for all Relationship Streams
+    """
+
+    url_base = ""
+    application_id = ""
+    api_key = ""
+    api_version = ""
+
+    primary_key = None
+
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+
+    def parse_response(self, response: requests.Response, **kwargs):
+        response_data = response.json()
+
+        # Iterate over each event in the response and yield it
+        for event in response_data["data"]["app"]["events"]["edges"]:
+            yield {
+                "event_type": event["node"]["type"],  # Adjusted key to match schema
+                "occurredAt": event["node"]["occurredAt"],
+                "app_id": event["node"]["app"]["id"],
+                "app_name": event["node"]["app"]["name"],
+                "shop_id": event["node"]["shop"]["id"],
+                "shop_name": event["node"]["shop"]["name"],
+            }
+
+
+class RelationshipInstalls(ShopifyPartnersRelationshipStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
+
+    def request_body_json(
+        self,
+        stream_state: Mapping[str, Any],
+        stream_slice: Mapping[str, Any] = None,
+        next_page_token: Mapping[str, Any] = None,
+    ) -> MutableMapping[str, Any]:
+        api = ShopifyPartnersAPI(self.api_key, self.api_version)
+        q, v = api.get_events_installs(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
+
+
+class RelationshipUninstalls(ShopifyPartnersRelationshipStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
+
+    def request_body_json(
+        self,
+        stream_state: Mapping[str, Any],
+        stream_slice: Mapping[str, Any] = None,
+        next_page_token: Mapping[str, Any] = None,
+    ) -> MutableMapping[str, Any]:
+        api = ShopifyPartnersAPI(self.api_key, self.api_version)
+        q, v = api.get_events_uninstalls(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
+
+
+class RelationshipReactivated(ShopifyPartnersRelationshipStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
+
+    def request_body_json(
+        self,
+        stream_state: Mapping[str, Any],
+        stream_slice: Mapping[str, Any] = None,
+        next_page_token: Mapping[str, Any] = None,
+    ) -> MutableMapping[str, Any]:
+        api = ShopifyPartnersAPI(self.api_key, self.api_version)
+        q, v = api.get_events_reactivations(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
+
+
+class RelationshipDeactivated(ShopifyPartnersRelationshipStream):
+    def __init__(self, config: Mapping[str, Any], **kwargs):
+        super().__init__(config)
+        self.config = config
+
+    def request_body_json(
+        self,
+        stream_state: Mapping[str, Any],
+        stream_slice: Mapping[str, Any] = None,
+        next_page_token: Mapping[str, Any] = None,
+    ) -> MutableMapping[str, Any]:
+        api = ShopifyPartnersAPI(self.api_key, self.api_version)
+        q, v = api.get_events_deactivations(
+            self.application_id,
+            int(self.config["num_results_per_call"]),
+            next_page_token,
+        )
+        return {"query": q, "variables": v}
 
 
 class ShopifySubscriptionWithCostStream(ShopifyPartnersStream):
@@ -182,10 +579,10 @@ class SubscriptionCappedAmountUpdated(ShopifySubscriptionWithCostStream):
         self.config = config
 
     def request_body_json(
-            self,
-            stream_state: Mapping[str, Any],
-            stream_slice: Mapping[str, Any] = None,
-            next_page_token: Mapping[str, Any] = None,
+        self,
+        stream_state: Mapping[str, Any],
+        stream_slice: Mapping[str, Any] = None,
+        next_page_token: Mapping[str, Any] = None,
     ) -> MutableMapping[str, Any]:
         api = ShopifyPartnersAPI(self.api_key, self.api_version)
         q, v = api.get_events_subscription_capped_amount_updated(
@@ -202,10 +599,10 @@ class SubscriptionApproachingCappedAmount(ShopifySubscriptionWithCostStream):
         self.config = config
 
     def request_body_json(
-            self,
-            stream_state: Mapping[str, Any],
-            stream_slice: Mapping[str, Any] = None,
-            next_page_token: Mapping[str, Any] = None,
+        self,
+        stream_state: Mapping[str, Any],
+        stream_slice: Mapping[str, Any] = None,
+        next_page_token: Mapping[str, Any] = None,
     ) -> MutableMapping[str, Any]:
         api = ShopifyPartnersAPI(self.api_key, self.api_version)
         q, v = api.get_events_subscription_approaching_capped_amount(
@@ -222,10 +619,10 @@ class SubscriptionChargeAccepted(ShopifySubscriptionWithCostStream):
         self.config = config
 
     def request_body_json(
-            self,
-            stream_state: Mapping[str, Any],
-            stream_slice: Mapping[str, Any] = None,
-            next_page_token: Mapping[str, Any] = None,
+        self,
+        stream_state: Mapping[str, Any],
+        stream_slice: Mapping[str, Any] = None,
+        next_page_token: Mapping[str, Any] = None,
     ) -> MutableMapping[str, Any]:
         api = ShopifyPartnersAPI(self.api_key, self.api_version)
         q, v = api.get_events_subscription_charge_accepted(
@@ -242,10 +639,10 @@ class SubscriptionChargeActivated(ShopifySubscriptionWithCostStream):
         self.config = config
 
     def request_body_json(
-            self,
-            stream_state: Mapping[str, Any],
-            stream_slice: Mapping[str, Any] = None,
-            next_page_token: Mapping[str, Any] = None,
+        self,
+        stream_state: Mapping[str, Any],
+        stream_slice: Mapping[str, Any] = None,
+        next_page_token: Mapping[str, Any] = None,
     ) -> MutableMapping[str, Any]:
         api = ShopifyPartnersAPI(self.api_key, self.api_version)
         q, v = api.get_events_subscription_charge_activated(
@@ -262,10 +659,10 @@ class SubscriptionChargeCanceled(ShopifySubscriptionWithCostStream):
         self.config = config
 
     def request_body_json(
-            self,
-            stream_state: Mapping[str, Any],
-            stream_slice: Mapping[str, Any] = None,
-            next_page_token: Mapping[str, Any] = None,
+        self,
+        stream_state: Mapping[str, Any],
+        stream_slice: Mapping[str, Any] = None,
+        next_page_token: Mapping[str, Any] = None,
     ) -> MutableMapping[str, Any]:
         api = ShopifyPartnersAPI(self.api_key, self.api_version)
         q, v = api.get_events_subscription_charge_canceled(
@@ -282,10 +679,10 @@ class SubscriptionChargeDeclined(ShopifySubscriptionWithCostStream):
         self.config = config
 
     def request_body_json(
-            self,
-            stream_state: Mapping[str, Any],
-            stream_slice: Mapping[str, Any] = None,
-            next_page_token: Mapping[str, Any] = None,
+        self,
+        stream_state: Mapping[str, Any],
+        stream_slice: Mapping[str, Any] = None,
+        next_page_token: Mapping[str, Any] = None,
     ) -> MutableMapping[str, Any]:
         api = ShopifyPartnersAPI(self.api_key, self.api_version)
         q, v = api.get_events_subscription_charge_declined(
@@ -302,10 +699,10 @@ class SubscriptionChargeExpired(ShopifySubscriptionWithCostStream):
         self.config = config
 
     def request_body_json(
-            self,
-            stream_state: Mapping[str, Any],
-            stream_slice: Mapping[str, Any] = None,
-            next_page_token: Mapping[str, Any] = None,
+        self,
+        stream_state: Mapping[str, Any],
+        stream_slice: Mapping[str, Any] = None,
+        next_page_token: Mapping[str, Any] = None,
     ) -> MutableMapping[str, Any]:
         api = ShopifyPartnersAPI(self.api_key, self.api_version)
         q, v = api.get_events_subscription_charge_expired(
@@ -322,10 +719,10 @@ class SubscriptionChargeFrozen(ShopifySubscriptionWithCostStream):
         self.config = config
 
     def request_body_json(
-            self,
-            stream_state: Mapping[str, Any],
-            stream_slice: Mapping[str, Any] = None,
-            next_page_token: Mapping[str, Any] = None,
+        self,
+        stream_state: Mapping[str, Any],
+        stream_slice: Mapping[str, Any] = None,
+        next_page_token: Mapping[str, Any] = None,
     ) -> MutableMapping[str, Any]:
         api = ShopifyPartnersAPI(self.api_key, self.api_version)
         q, v = api.get_events_subscription_charge_frozen(
@@ -342,10 +739,10 @@ class SubscriptionChargeUnfrozen(ShopifySubscriptionWithCostStream):
         self.config = config
 
     def request_body_json(
-            self,
-            stream_state: Mapping[str, Any],
-            stream_slice: Mapping[str, Any] = None,
-            next_page_token: Mapping[str, Any] = None,
+        self,
+        stream_state: Mapping[str, Any],
+        stream_slice: Mapping[str, Any] = None,
+        next_page_token: Mapping[str, Any] = None,
     ) -> MutableMapping[str, Any]:
         api = ShopifyPartnersAPI(self.api_key, self.api_version)
         q, v = api.get_events_subscription_charge_unfrozen(
@@ -362,10 +759,10 @@ class UsageChargeApplied(ShopifySubscriptionWithCostStream):
         self.config = config
 
     def request_body_json(
-            self,
-            stream_state: Mapping[str, Any],
-            stream_slice: Mapping[str, Any] = None,
-            next_page_token: Mapping[str, Any] = None,
+        self,
+        stream_state: Mapping[str, Any],
+        stream_slice: Mapping[str, Any] = None,
+        next_page_token: Mapping[str, Any] = None,
     ) -> MutableMapping[str, Any]:
         api = ShopifyPartnersAPI(self.api_key, self.api_version)
         q, v = api.get_events_usage_charge_applied(
@@ -382,10 +779,10 @@ class OneTimeChargeAccepted(ShopifySubscriptionWithCostStream):
         self.config = config
 
     def request_body_json(
-            self,
-            stream_state: Mapping[str, Any],
-            stream_slice: Mapping[str, Any] = None,
-            next_page_token: Mapping[str, Any] = None,
+        self,
+        stream_state: Mapping[str, Any],
+        stream_slice: Mapping[str, Any] = None,
+        next_page_token: Mapping[str, Any] = None,
     ) -> MutableMapping[str, Any]:
         api = ShopifyPartnersAPI(self.api_key, self.api_version)
         q, v = api.get_events_one_time_charge_accepted(
@@ -402,10 +799,10 @@ class OneTimeChargeExpired(ShopifySubscriptionWithCostStream):
         self.config = config
 
     def request_body_json(
-            self,
-            stream_state: Mapping[str, Any],
-            stream_slice: Mapping[str, Any] = None,
-            next_page_token: Mapping[str, Any] = None,
+        self,
+        stream_state: Mapping[str, Any],
+        stream_slice: Mapping[str, Any] = None,
+        next_page_token: Mapping[str, Any] = None,
     ) -> MutableMapping[str, Any]:
         api = ShopifyPartnersAPI(self.api_key, self.api_version)
         q, v = api.get_events_one_time_charge_expired(
@@ -422,10 +819,10 @@ class OneTimeChargeActivated(ShopifySubscriptionWithCostStream):
         self.config = config
 
     def request_body_json(
-            self,
-            stream_state: Mapping[str, Any],
-            stream_slice: Mapping[str, Any] = None,
-            next_page_token: Mapping[str, Any] = None,
+        self,
+        stream_state: Mapping[str, Any],
+        stream_slice: Mapping[str, Any] = None,
+        next_page_token: Mapping[str, Any] = None,
     ) -> MutableMapping[str, Any]:
         api = ShopifyPartnersAPI(self.api_key, self.api_version)
         q, v = api.get_events_one_time_charge_activated(
@@ -442,10 +839,10 @@ class OneTimeChargeDeclined(ShopifySubscriptionWithCostStream):
         self.config = config
 
     def request_body_json(
-            self,
-            stream_state: Mapping[str, Any],
-            stream_slice: Mapping[str, Any] = None,
-            next_page_token: Mapping[str, Any] = None,
+        self,
+        stream_state: Mapping[str, Any],
+        stream_slice: Mapping[str, Any] = None,
+        next_page_token: Mapping[str, Any] = None,
     ) -> MutableMapping[str, Any]:
         api = ShopifyPartnersAPI(self.api_key, self.api_version)
         q, v = api.get_events_one_time_charge_declined(
@@ -478,9 +875,9 @@ class IncrementalShopifyPartnersStream(ShopifyPartnersStream, ABC):
         return []
 
     def get_updated_state(
-            self,
-            current_stream_state: MutableMapping[str, Any],
-            latest_record: Mapping[str, Any],
+        self,
+        current_stream_state: MutableMapping[str, Any],
+        latest_record: Mapping[str, Any],
     ) -> Mapping[str, Any]:
         """
         Override to determine the latest state after reading the latest record. This typically compared the cursor_field from the latest record and
@@ -526,8 +923,8 @@ class SourceShopifyPartners(AbstractSource):
                 return False, f"{results['error']}"
 
         except (
-                requests.exceptions.RequestException,
-                requests.exceptions.HTTPError,
+            requests.exceptions.RequestException,
+            requests.exceptions.HTTPError,
         ) as e:
             return False, f"Unable to connect to the shopify partners api :: {e}"
 
