@@ -159,44 +159,42 @@
           "$schema" : "http://json-schema.org/draft-07/schema#",
           "type" : "object",
           "properties" : {
-            "properties" : {
-              "event_type" : {
-                "type" : "string"
-              },
-              "occurredAt" : {
-                "type" : [
-                  "null",
-                  "string"
-                ],
-                "format" : "date-time"
-              },
-              "app_id" : {
-                "type" : "string"
-              },
-              "app_name" : {
-                "type" : "string"
-              },
-              "shop_id" : {
-                "type" : "string"
-              },
-              "shop_name" : {
-                "type" : "string"
-              },
-              "app_credit_id" : {
-                "type" : "string"
-              },
-              "app_credit_test" : {
-                "type" : "boolean"
-              },
-              "app_credit_name" : {
-                "type" : "string"
-              },
-              "app_credit_amount" : {
-                "type" : "number"
-              },
-              "app_credit_currency_code" : {
-                "type" : "string"
-              }
+            "event_type" : {
+              "type" : "string"
+            },
+            "occurredAt" : {
+              "type" : [
+                "null",
+                "string"
+              ],
+              "format" : "date-time"
+            },
+            "app_id" : {
+              "type" : "string"
+            },
+            "app_name" : {
+              "type" : "string"
+            },
+            "shop_id" : {
+              "type" : "string"
+            },
+            "shop_name" : {
+              "type" : "string"
+            },
+            "app_credit_id" : {
+              "type" : "string"
+            },
+            "app_credit_test" : {
+              "type" : "boolean"
+            },
+            "app_credit_name" : {
+              "type" : "string"
+            },
+            "app_credit_amount" : {
+              "type" : "number"
+            },
+            "app_credit_currency_code" : {
+              "type" : "string"
             }
           }
         },
@@ -214,44 +212,42 @@
           "$schema" : "http://json-schema.org/draft-07/schema#",
           "type" : "object",
           "properties" : {
-            "properties" : {
-              "event_type" : {
-                "type" : "string"
-              },
-              "occurredAt" : {
-                "type" : [
-                  "null",
-                  "string"
-                ],
-                "format" : "date-time"
-              },
-              "app_id" : {
-                "type" : "string"
-              },
-              "app_name" : {
-                "type" : "string"
-              },
-              "shop_id" : {
-                "type" : "string"
-              },
-              "shop_name" : {
-                "type" : "string"
-              },
-              "app_credit_id" : {
-                "type" : "string"
-              },
-              "app_credit_test" : {
-                "type" : "boolean"
-              },
-              "app_credit_name" : {
-                "type" : "string"
-              },
-              "app_credit_amount" : {
-                "type" : "number"
-              },
-              "app_credit_currency_code" : {
-                "type" : "string"
-              }
+            "event_type" : {
+              "type" : "string"
+            },
+            "occurredAt" : {
+              "type" : [
+                "null",
+                "string"
+              ],
+              "format" : "date-time"
+            },
+            "app_id" : {
+              "type" : "string"
+            },
+            "app_name" : {
+              "type" : "string"
+            },
+            "shop_id" : {
+              "type" : "string"
+            },
+            "shop_name" : {
+              "type" : "string"
+            },
+            "app_credit_id" : {
+              "type" : "string"
+            },
+            "app_credit_test" : {
+              "type" : "boolean"
+            },
+            "app_credit_name" : {
+              "type" : "string"
+            },
+            "app_credit_amount" : {
+              "type" : "number"
+            },
+            "app_credit_currency_code" : {
+              "type" : "string"
             }
           }
         },
@@ -269,44 +265,866 @@
           "$schema" : "http://json-schema.org/draft-07/schema#",
           "type" : "object",
           "properties" : {
-            "properties" : {
-              "event_type" : {
-                "type" : "string"
-              },
-              "occurredAt" : {
-                "type" : [
-                  "null",
-                  "string"
-                ],
-                "format" : "date-time"
-              },
-              "app_id" : {
-                "type" : "string"
-              },
-              "app_name" : {
-                "type" : "string"
-              },
-              "shop_id" : {
-                "type" : "string"
-              },
-              "shop_name" : {
-                "type" : "string"
-              },
-              "app_credit_id" : {
-                "type" : "string"
-              },
-              "app_credit_test" : {
-                "type" : "boolean"
-              },
-              "app_credit_name" : {
-                "type" : "string"
-              },
-              "app_credit_amount" : {
-                "type" : "number"
-              },
-              "app_credit_currency_code" : {
-                "type" : "string"
-              }
+            "event_type" : {
+              "type" : "string"
+            },
+            "occurredAt" : {
+              "type" : [
+                "null",
+                "string"
+              ],
+              "format" : "date-time"
+            },
+            "app_id" : {
+              "type" : "string"
+            },
+            "app_name" : {
+              "type" : "string"
+            },
+            "shop_id" : {
+              "type" : "string"
+            },
+            "shop_name" : {
+              "type" : "string"
+            },
+            "app_credit_id" : {
+              "type" : "string"
+            },
+            "app_credit_test" : {
+              "type" : "boolean"
+            },
+            "app_credit_name" : {
+              "type" : "string"
+            },
+            "app_credit_amount" : {
+              "type" : "number"
+            },
+            "app_credit_currency_code" : {
+              "type" : "string"
+            }
+          }
+        },
+        "supported_sync_modes" : [
+          "full_refresh"
+        ]
+      },
+      "sync_mode" : "full_refresh",
+      "destination_sync_mode" : "overwrite"
+    },
+    {
+      "stream" : {
+        "name" : "subscription_approaching_capped_amount",
+        "json_schema" : {
+          "$schema" : "http://json-schema.org/draft-07/schema#",
+          "type" : "object",
+          "properties" : {
+            "event_type" : {
+              "type" : "string"
+            },
+            "occurredAt" : {
+              "type" : [
+                "null",
+                "string"
+              ],
+              "format" : "date-time"
+            },
+            "app_id" : {
+              "type" : "string"
+            },
+            "app_name" : {
+              "type" : "string"
+            },
+            "shop_id" : {
+              "type" : "string"
+            },
+            "shop_name" : {
+              "type" : "string"
+            },
+            "charge_id" : {
+              "type" : "string"
+            },
+            "charge_test" : {
+              "type" : "boolean"
+            },
+            "charge_name" : {
+              "type" : "string"
+            },
+            "charge_billingOn" : {
+              "type" : "string",
+              "format" : "date"
+            },
+            "charge_amount" : {
+              "type" : "number"
+            },
+            "charge_currencyCode" : {
+              "type" : "string"
+            }
+          }
+        },
+        "supported_sync_modes" : [
+          "full_refresh"
+        ]
+      },
+      "sync_mode" : "full_refresh",
+      "destination_sync_mode" : "overwrite"
+    },
+    {
+      "stream" : {
+        "name" : "subscription_capped_amount_updated",
+        "json_schema" : {
+          "$schema" : "http://json-schema.org/draft-07/schema#",
+          "type" : "object",
+          "properties" : {
+            "event_type" : {
+              "type" : "string"
+            },
+            "occurredAt" : {
+              "type" : [
+                "null",
+                "string"
+              ],
+              "format" : "date-time"
+            },
+            "app_id" : {
+              "type" : "string"
+            },
+            "app_name" : {
+              "type" : "string"
+            },
+            "shop_id" : {
+              "type" : "string"
+            },
+            "shop_name" : {
+              "type" : "string"
+            },
+            "charge_id" : {
+              "type" : "string"
+            },
+            "charge_test" : {
+              "type" : "boolean"
+            },
+            "charge_name" : {
+              "type" : "string"
+            },
+            "charge_billingOn" : {
+              "type" : "string",
+              "format" : "date"
+            },
+            "charge_amount" : {
+              "type" : "number"
+            },
+            "charge_currencyCode" : {
+              "type" : "string"
+            }
+          }
+        },
+        "supported_sync_modes" : [
+          "full_refresh"
+        ]
+      },
+      "sync_mode" : "full_refresh",
+      "destination_sync_mode" : "overwrite"
+    },
+    {
+      "stream" : {
+        "name" : "subscription_charge_accepted",
+        "json_schema" : {
+          "$schema" : "http://json-schema.org/draft-07/schema#",
+          "type" : "object",
+          "properties" : {
+            "event_type" : {
+              "type" : "string"
+            },
+            "occurredAt" : {
+              "type" : [
+                "null",
+                "string"
+              ],
+              "format" : "date-time"
+            },
+            "app_id" : {
+              "type" : "string"
+            },
+            "app_name" : {
+              "type" : "string"
+            },
+            "shop_id" : {
+              "type" : "string"
+            },
+            "shop_name" : {
+              "type" : "string"
+            },
+            "charge_id" : {
+              "type" : "string"
+            },
+            "charge_test" : {
+              "type" : "boolean"
+            },
+            "charge_name" : {
+              "type" : "string"
+            },
+            "charge_billingOn" : {
+              "type" : "string",
+              "format" : "date"
+            },
+            "charge_amount" : {
+              "type" : "number"
+            },
+            "charge_currencyCode" : {
+              "type" : "string"
+            }
+          }
+        },
+        "supported_sync_modes" : [
+          "full_refresh"
+        ]
+      },
+      "sync_mode" : "full_refresh",
+      "destination_sync_mode" : "overwrite"
+    },
+    {
+      "stream" : {
+        "name" : "subscription_charge_activated",
+        "json_schema" : {
+          "$schema" : "http://json-schema.org/draft-07/schema#",
+          "type" : "object",
+          "properties" : {
+            "event_type" : {
+              "type" : "string"
+            },
+            "occurredAt" : {
+              "type" : [
+                "null",
+                "string"
+              ],
+              "format" : "date-time"
+            },
+            "app_id" : {
+              "type" : "string"
+            },
+            "app_name" : {
+              "type" : "string"
+            },
+            "shop_id" : {
+              "type" : "string"
+            },
+            "shop_name" : {
+              "type" : "string"
+            },
+            "charge_id" : {
+              "type" : "string"
+            },
+            "charge_test" : {
+              "type" : "boolean"
+            },
+            "charge_name" : {
+              "type" : "string"
+            },
+            "charge_billingOn" : {
+              "type" : "string",
+              "format" : "date"
+            },
+            "charge_amount" : {
+              "type" : "number"
+            },
+            "charge_currencyCode" : {
+              "type" : "string"
+            }
+          }
+        },
+        "supported_sync_modes" : [
+          "full_refresh"
+        ]
+      },
+      "sync_mode" : "full_refresh",
+      "destination_sync_mode" : "overwrite"
+    },
+    {
+      "stream" : {
+        "name" : "subscription_charge_canceled",
+        "json_schema" : {
+          "$schema" : "http://json-schema.org/draft-07/schema#",
+          "type" : "object",
+          "properties" : {
+            "event_type" : {
+              "type" : "string"
+            },
+            "occurredAt" : {
+              "type" : [
+                "null",
+                "string"
+              ],
+              "format" : "date-time"
+            },
+            "app_id" : {
+              "type" : "string"
+            },
+            "app_name" : {
+              "type" : "string"
+            },
+            "shop_id" : {
+              "type" : "string"
+            },
+            "shop_name" : {
+              "type" : "string"
+            },
+            "charge_id" : {
+              "type" : "string"
+            },
+            "charge_test" : {
+              "type" : "boolean"
+            },
+            "charge_name" : {
+              "type" : "string"
+            },
+            "charge_billingOn" : {
+              "type" : "string",
+              "format" : "date"
+            },
+            "charge_amount" : {
+              "type" : "number"
+            },
+            "charge_currencyCode" : {
+              "type" : "string"
+            }
+          }
+        },
+        "supported_sync_modes" : [
+          "full_refresh"
+        ]
+      },
+      "sync_mode" : "full_refresh",
+      "destination_sync_mode" : "overwrite"
+    },
+    {
+      "stream" : {
+        "name" : "subscription_charge_declined",
+        "json_schema" : {
+          "$schema" : "http://json-schema.org/draft-07/schema#",
+          "type" : "object",
+          "properties" : {
+            "event_type" : {
+              "type" : "string"
+            },
+            "occurredAt" : {
+              "type" : [
+                "null",
+                "string"
+              ],
+              "format" : "date-time"
+            },
+            "app_id" : {
+              "type" : "string"
+            },
+            "app_name" : {
+              "type" : "string"
+            },
+            "shop_id" : {
+              "type" : "string"
+            },
+            "shop_name" : {
+              "type" : "string"
+            },
+            "charge_id" : {
+              "type" : "string"
+            },
+            "charge_test" : {
+              "type" : "boolean"
+            },
+            "charge_name" : {
+              "type" : "string"
+            },
+            "charge_billingOn" : {
+              "type" : "string",
+              "format" : "date"
+            },
+            "charge_amount" : {
+              "type" : "number"
+            },
+            "charge_currencyCode" : {
+              "type" : "string"
+            }
+          }
+        },
+        "supported_sync_modes" : [
+          "full_refresh"
+        ]
+      },
+      "sync_mode" : "full_refresh",
+      "destination_sync_mode" : "overwrite"
+    },
+    {
+      "stream" : {
+        "name" : "subscription_charge_expired",
+        "json_schema" : {
+          "$schema" : "http://json-schema.org/draft-07/schema#",
+          "type" : "object",
+          "properties" : {
+            "event_type" : {
+              "type" : "string"
+            },
+            "occurredAt" : {
+              "type" : [
+                "null",
+                "string"
+              ],
+              "format" : "date-time"
+            },
+            "app_id" : {
+              "type" : "string"
+            },
+            "app_name" : {
+              "type" : "string"
+            },
+            "shop_id" : {
+              "type" : "string"
+            },
+            "shop_name" : {
+              "type" : "string"
+            },
+            "charge_id" : {
+              "type" : "string"
+            },
+            "charge_test" : {
+              "type" : "boolean"
+            },
+            "charge_name" : {
+              "type" : "string"
+            },
+            "charge_billingOn" : {
+              "type" : "string",
+              "format" : "date"
+            },
+            "charge_amount" : {
+              "type" : "number"
+            },
+            "charge_currencyCode" : {
+              "type" : "string"
+            }
+          }
+        },
+        "supported_sync_modes" : [
+          "full_refresh"
+        ]
+      },
+      "sync_mode" : "full_refresh",
+      "destination_sync_mode" : "overwrite"
+    },
+    {
+      "stream" : {
+        "name" : "subscription_charge_frozen",
+        "json_schema" : {
+          "$schema" : "http://json-schema.org/draft-07/schema#",
+          "type" : "object",
+          "properties" : {
+            "event_type" : {
+              "type" : "string"
+            },
+            "occurredAt" : {
+              "type" : [
+                "null",
+                "string"
+              ],
+              "format" : "date-time"
+            },
+            "app_id" : {
+              "type" : "string"
+            },
+            "app_name" : {
+              "type" : "string"
+            },
+            "shop_id" : {
+              "type" : "string"
+            },
+            "shop_name" : {
+              "type" : "string"
+            },
+            "charge_id" : {
+              "type" : "string"
+            },
+            "charge_test" : {
+              "type" : "boolean"
+            },
+            "charge_name" : {
+              "type" : "string"
+            },
+            "charge_billingOn" : {
+              "type" : "string",
+              "format" : "date"
+            },
+            "charge_amount" : {
+              "type" : "number"
+            },
+            "charge_currencyCode" : {
+              "type" : "string"
+            }
+          }
+        },
+        "supported_sync_modes" : [
+          "full_refresh"
+        ]
+      },
+      "sync_mode" : "full_refresh",
+      "destination_sync_mode" : "overwrite"
+    },
+    {
+      "stream" : {
+        "name" : "subscription_charge_unfrozen",
+        "json_schema" : {
+          "$schema" : "http://json-schema.org/draft-07/schema#",
+          "type" : "object",
+          "properties" : {
+            "event_type" : {
+              "type" : "string"
+            },
+            "occurredAt" : {
+              "type" : [
+                "null",
+                "string"
+              ],
+              "format" : "date-time"
+            },
+            "app_id" : {
+              "type" : "string"
+            },
+            "app_name" : {
+              "type" : "string"
+            },
+            "shop_id" : {
+              "type" : "string"
+            },
+            "shop_name" : {
+              "type" : "string"
+            },
+            "charge_id" : {
+              "type" : "string"
+            },
+            "charge_test" : {
+              "type" : "boolean"
+            },
+            "charge_name" : {
+              "type" : "string"
+            },
+            "charge_billingOn" : {
+              "type" : "string",
+              "format" : "date"
+            },
+            "charge_amount" : {
+              "type" : "number"
+            },
+            "charge_currencyCode" : {
+              "type" : "string"
+            }
+          }
+        },
+        "supported_sync_modes" : [
+          "full_refresh"
+        ]
+      },
+      "sync_mode" : "full_refresh",
+      "destination_sync_mode" : "overwrite"
+    },
+    {
+      "stream" : {
+        "name" : "usage_charge_applied",
+        "json_schema" : {
+          "$schema" : "http://json-schema.org/draft-07/schema#",
+          "type" : "object",
+          "properties" : {
+            "event_type" : {
+              "type" : "string"
+            },
+            "occurredAt" : {
+              "type" : [
+                "null",
+                "string"
+              ],
+              "format" : "date-time"
+            },
+            "app_id" : {
+              "type" : "string"
+            },
+            "app_name" : {
+              "type" : "string"
+            },
+            "shop_id" : {
+              "type" : "string"
+            },
+            "shop_name" : {
+              "type" : "string"
+            },
+            "charge_id" : {
+              "type" : "string"
+            },
+            "charge_test" : {
+              "type" : "boolean"
+            },
+            "charge_name" : {
+              "type" : "string"
+            },
+            "charge_billingOn" : {
+              "type" : "string",
+              "format" : "date"
+            },
+            "charge_amount" : {
+              "type" : "number"
+            },
+            "charge_currencyCode" : {
+              "type" : "string"
+            }
+          }
+        },
+        "supported_sync_modes" : [
+          "full_refresh"
+        ]
+      },
+      "sync_mode" : "full_refresh",
+      "destination_sync_mode" : "overwrite"
+    },
+    {
+      "stream" : {
+        "name" : "one_time_charge_accepted",
+        "json_schema" : {
+          "$schema" : "http://json-schema.org/draft-07/schema#",
+          "type" : "object",
+          "properties" : {
+            "event_type" : {
+              "type" : "string"
+            },
+            "occurredAt" : {
+              "type" : [
+                "null",
+                "string"
+              ],
+              "format" : "date-time"
+            },
+            "app_id" : {
+              "type" : "string"
+            },
+            "app_name" : {
+              "type" : "string"
+            },
+            "shop_id" : {
+              "type" : "string"
+            },
+            "shop_name" : {
+              "type" : "string"
+            },
+            "charge_id" : {
+              "type" : "string"
+            },
+            "charge_test" : {
+              "type" : "boolean"
+            },
+            "charge_name" : {
+              "type" : "string"
+            },
+            "charge_billingOn" : {
+              "type" : "string",
+              "format" : "date"
+            },
+            "charge_amount" : {
+              "type" : "number"
+            },
+            "charge_currencyCode" : {
+              "type" : "string"
+            }
+          }
+        },
+        "supported_sync_modes" : [
+          "full_refresh"
+        ]
+      },
+      "sync_mode" : "full_refresh",
+      "destination_sync_mode" : "overwrite"
+    },
+    {
+      "stream" : {
+        "name" : "one_time_charge_activated",
+        "json_schema" : {
+          "$schema" : "http://json-schema.org/draft-07/schema#",
+          "type" : "object",
+          "properties" : {
+            "event_type" : {
+              "type" : "string"
+            },
+            "occurredAt" : {
+              "type" : [
+                "null",
+                "string"
+              ],
+              "format" : "date-time"
+            },
+            "app_id" : {
+              "type" : "string"
+            },
+            "app_name" : {
+              "type" : "string"
+            },
+            "shop_id" : {
+              "type" : "string"
+            },
+            "shop_name" : {
+              "type" : "string"
+            },
+            "charge_id" : {
+              "type" : "string"
+            },
+            "charge_test" : {
+              "type" : "boolean"
+            },
+            "charge_name" : {
+              "type" : "string"
+            },
+            "charge_billingOn" : {
+              "type" : "string",
+              "format" : "date"
+            },
+            "charge_amount" : {
+              "type" : "number"
+            },
+            "charge_currencyCode" : {
+              "type" : "string"
+            }
+          }
+        },
+        "supported_sync_modes" : [
+          "full_refresh"
+        ]
+      },
+      "sync_mode" : "full_refresh",
+      "destination_sync_mode" : "overwrite"
+    },
+    {
+      "stream" : {
+        "name" : "one_time_charge_declined",
+        "json_schema" : {
+          "$schema" : "http://json-schema.org/draft-07/schema#",
+          "type" : "object",
+          "properties" : {
+            "event_type" : {
+              "type" : "string"
+            },
+            "occurredAt" : {
+              "type" : [
+                "null",
+                "string"
+              ],
+              "format" : "date-time"
+            },
+            "app_id" : {
+              "type" : "string"
+            },
+            "app_name" : {
+              "type" : "string"
+            },
+            "shop_id" : {
+              "type" : "string"
+            },
+            "shop_name" : {
+              "type" : "string"
+            },
+            "charge_id" : {
+              "type" : "string"
+            },
+            "charge_test" : {
+              "type" : "boolean"
+            },
+            "charge_name" : {
+              "type" : "string"
+            },
+            "charge_billingOn" : {
+              "type" : "string",
+              "format" : "date"
+            },
+            "charge_amount" : {
+              "type" : "number"
+            },
+            "charge_currencyCode" : {
+              "type" : "string"
+            }
+          }
+        },
+        "supported_sync_modes" : [
+          "full_refresh"
+        ]
+      },
+      "sync_mode" : "full_refresh",
+      "destination_sync_mode" : "overwrite"
+    },
+    {
+      "stream" : {
+        "name" : "one_time_charge_expired",
+        "json_schema" : {
+          "$schema" : "http://json-schema.org/draft-07/schema#",
+          "type" : "object",
+          "properties" : {
+            "event_type" : {
+              "type" : "string"
+            },
+            "occurredAt" : {
+              "type" : [
+                "null",
+                "string"
+              ],
+              "format" : "date-time"
+            },
+            "app_id" : {
+              "type" : "string"
+            },
+            "app_name" : {
+              "type" : "string"
+            },
+            "shop_id" : {
+              "type" : "string"
+            },
+            "shop_name" : {
+              "type" : "string"
+            },
+            "charge_id" : {
+              "type" : "string"
+            },
+            "charge_test" : {
+              "type" : "boolean"
+            },
+            "charge_name" : {
+              "type" : "string"
+            },
+            "charge_billingOn" : {
+              "type" : "string",
+              "format" : "date"
+            },
+            "charge_amount" : {
+              "type" : "number"
+            },
+            "charge_currencyCode" : {
+              "type" : "string"
+            }
+          }
+        },
+        "supported_sync_modes" : [
+          "full_refresh"
+        ]
+      },
+      "sync_mode" : "full_refresh",
+      "destination_sync_mode" : "overwrite"
+    },
+    {
+      "stream" : {
+        "name" : "all_transactions",
+        "json_schema" : {
+          "$schema" : "http://json-schema.org/draft-07/schema#",
+          "type" : "object",
+          "properties" : {
+            "createdAt" : {
+              "type" : [
+                "null",
+                "string"
+              ],
+              "format" : "date-time"
+            },
+            "id" : {
+              "type" : "string"
             }
           }
         },

@@ -1,0 +1,16 @@
+{
+  "$schema" : "http://json-schema.org/draft-07/schema#",
+  "type" : "object",
+  "properties" : {
+    "createdAt" : {
+      "type" : [
+        "null",
+        "string"
+      ],
+      "format" : "date-time"
+    },
+    "id" : {
+      "type" : "string"
+    }
+  }
+}
