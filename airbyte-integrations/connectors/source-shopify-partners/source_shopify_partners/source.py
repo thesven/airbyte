@@ -803,6 +803,7 @@ class ShopifySubscriptionWithCostStream(ShopifyPartnersStream):
 
         # Iterate over each event in the response and yield it
         for event in response_data["data"]["app"]["events"]["edges"]:
+            print(f"Charge Amount ==  {event['node']['charge']}")
             yield {
                 "event_type": event["node"]["type"],
                 "occurredAt": event["node"]["occurredAt"],

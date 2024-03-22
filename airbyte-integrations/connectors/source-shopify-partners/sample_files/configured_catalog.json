@@ -354,7 +354,7 @@
               "format" : "date"
             },
             "charge_amount" : {
-              "type" : "number"
+              "type" : "string"
             },
             "charge_currencyCode" : {
               "type" : "string"
@@ -411,7 +411,7 @@
               "format" : "date"
             },
             "charge_amount" : {
-              "type" : "number"
+              "type" : "string"
             },
             "charge_currencyCode" : {
               "type" : "string"
@@ -468,7 +468,7 @@
               "format" : "date"
             },
             "charge_amount" : {
-              "type" : "number"
+              "type" : "string"
             },
             "charge_currencyCode" : {
               "type" : "string"
@@ -525,7 +525,7 @@
               "format" : "date"
             },
             "charge_amount" : {
-              "type" : "number"
+              "type" : "string"
             },
             "charge_currencyCode" : {
               "type" : "string"
@@ -582,7 +582,7 @@
               "format" : "date"
             },
             "charge_amount" : {
-              "type" : "number"
+              "type" : "string"
             },
             "charge_currencyCode" : {
               "type" : "string"
@@ -639,7 +639,7 @@
               "format" : "date"
             },
             "charge_amount" : {
-              "type" : "number"
+              "type" : "string"
             },
             "charge_currencyCode" : {
               "type" : "string"
@@ -696,7 +696,7 @@
               "format" : "date"
             },
             "charge_amount" : {
-              "type" : "number"
+              "type" : "string"
             },
             "charge_currencyCode" : {
               "type" : "string"
@@ -753,7 +753,7 @@
               "format" : "date"
             },
             "charge_amount" : {
-              "type" : "number"
+              "type" : "string"
             },
             "charge_currencyCode" : {
               "type" : "string"
@@ -810,7 +810,7 @@
               "format" : "date"
             },
             "charge_amount" : {
-              "type" : "number"
+              "type" : "string"
             },
             "charge_currencyCode" : {
               "type" : "string"
@@ -867,7 +867,7 @@
               "format" : "date"
             },
             "charge_amount" : {
-              "type" : "number"
+              "type" : "string"
             },
             "charge_currencyCode" : {
               "type" : "string"
@@ -924,7 +924,7 @@
               "format" : "date"
             },
             "charge_amount" : {
-              "type" : "number"
+              "type" : "string"
             },
             "charge_currencyCode" : {
               "type" : "string"
@@ -981,7 +981,7 @@
               "format" : "date"
             },
             "charge_amount" : {
-              "type" : "number"
+              "type" : "string"
             },
             "charge_currencyCode" : {
               "type" : "string"
@@ -1038,7 +1038,7 @@
               "format" : "date"
             },
             "charge_amount" : {
-              "type" : "number"
+              "type" : "string"
             },
             "charge_currencyCode" : {
               "type" : "string"
@@ -1095,7 +1095,7 @@
               "format" : "date"
             },
             "charge_amount" : {
-              "type" : "number"
+              "type" : "string"
             },
             "charge_currencyCode" : {
               "type" : "string"
