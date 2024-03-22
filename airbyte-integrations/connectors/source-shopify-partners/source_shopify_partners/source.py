@@ -1,6 +1,7 @@
 #
 # Copyright (c) 2023 Airbyte, Inc., all rights reserved.
 #
+import json
 from abc import ABC
 from typing import Any, List, Mapping, MutableMapping, Optional, Tuple, Union
 
@@ -37,8 +38,259 @@ class ShopifyPartnersAPI:
                     node {{
                         createdAt
                         id
+                        ...AppOneTimeSaleDetails
+                        ...AppSaleAdjustmentDetails
+                        ...AppSaleCreditDetails
+                        ...AppSubscriptionSaleDetails
+                        ...AppUsageSaleDetails
+                        ...LegacyTransactionDetails
+                        ...ReferralAdjustmentDetails
+                        ...ReferralTransactionDetails
+                        ...ServiceSaleDetails
+                        ...ServiceSaleAdjustmentDetails
+                        ...TaxTransactionDetails
+                        ...ThemeSaleDetails
+                        ...ThemeSaleAdjustmentDetails
                     }}
                 }}
+            }}
+        }}
+        
+        fragment ThemeSaleAdjustmentDetails on ThemeSaleAdjustment {{
+            grossAmount {{
+                amount
+                currencyCode
+            }}
+            netAmount {{
+                amount
+                currencyCode
+            }}
+            shop {{
+                id
+                name
+            }}
+            shopifyFee {{
+                amount
+                currencyCode
+            }}
+            theme {{
+                name
+            }}
+        }}
+        
+        fragment ThemeSaleDetails on ThemeSale{{
+            grossAmount {{
+                amount
+                currencyCode
+            }}
+            netAmount {{
+                amount
+                currencyCode
+            }}
+            shop {{
+                id
+                name
+            }}
+            shopifyFee {{
+                amount
+                currencyCode
+            }}
+            theme {{
+                name
+            }}
+        }}
+        
+        fragment TaxTransactionDetails on TaxTransaction {{
+            amount {{
+                amount
+                currencyCode
+            }}
+        }}
+        
+        fragment ServiceSaleAdjustmentDetails on ServiceSaleAdjustment{{
+            grossAmount {{
+                amount
+                currencyCode
+            }}
+            netAmount {{
+                amount
+                currencyCode
+            }}
+            shop {{
+                id
+                name
+            }}
+            shopifyFee {{
+                amount
+                currencyCode
+            }}
+        }}
+        
+        fragment ServiceSaleDetails on ServiceSale {{
+            grossAmount {{
+                amount
+                currencyCode
+            }}
+            netAmount {{
+                amount
+                currencyCode
+            }}
+            shop {{
+                id
+                name
+            }}
+            shopifyFee {{
+                amount
+                currencyCode
+            }}
+        }}
+        
+        fragment ReferralTransactionDetails on ReferralTransaction {{
+            amount {{
+                amount
+                currencyCode
+            }}
+            shop {{
+                id
+                name
+            }}
+        }}
+        
+        fragment ReferralAdjustmentDetails on ReferralAdjustment {{
+            amount {{
+                amount
+                currencyCode
+            }}
+            shop {{
+                id
+                name
+            }}
+        }}
+        
+        fragment LegacyTransactionDetails on LegacyTransaction {{
+            amount {{
+                amount
+                currencyCode
+            }}
+        }}
+        
+        fragment AppUsageSaleDetails on AppUsageSale {{
+            app {{
+                id
+                name
+            }}
+            chargeId
+            grossAmount {{
+                amount
+                currencyCode
+            }}
+            netAmount {{
+                amount
+                currencyCode
+            }}
+            shop {{
+                id
+                name
+            }}
+            shopifyFee {{
+                amount
+                currencyCode
+            }}
+        }}
+        
+        fragment AppSubscriptionSaleDetails on AppSubscriptionSale {{
+            app {{
+                id
+                name
+            }}
+            chargeId
+            grossAmount {{
+                amount
+                currencyCode
+            }}
+            netAmount {{
+                amount
+                currencyCode
+            }}
+            shop {{
+                id
+                name
+            }}
+            shopifyFee {{
+                amount
+                currencyCode
+            }}
+        }}
+        
+        fragment AppSaleCreditDetails on AppSaleCredit {{
+            app {{
+                id
+                name
+            }}
+            chargeId
+            grossAmount {{
+                amount
+                currencyCode
+            }}
+            netAmount {{
+                amount
+                currencyCode
+            }}
+            shop {{
+                id
+                name
+            }}
+            shopifyFee {{
+                amount
+                currencyCode
+            }}
+        }}
+        
+        fragment AppSaleAdjustmentDetails on AppSaleAdjustment {{
+            app {{
+                id
+                name
+            }}
+            chargeId
+            grossAmount {{
+                amount
+                currencyCode
+            }}
+            netAmount {{
+                amount
+                currencyCode
+            }}
+            shop {{
+                id
+                name
+            }}
+            shopifyFee {{
+                amount
+                currencyCode
+            }}
+        }}
+        
+        fragment AppOneTimeSaleDetails on AppOneTimeSale {{
+            app {{
+                id
+                name
+            }}
+            chargeId
+            grossAmount {{
+                amount
+                currencyCode
+            }}
+            netAmount {{
+                amount
+                currencyCode
+            }}
+            shop {{
+                id
+                name
+            }}
+            shopifyFee {{
+                amount
+                currencyCode
             }}
         }}
         """
@@ -552,7 +804,7 @@ class ShopifySubscriptionWithCostStream(ShopifyPartnersStream):
         # Iterate over each event in the response and yield it
         for event in response_data["data"]["app"]["events"]["edges"]:
             yield {
-                "type": event["node"]["type"],
+                "event_type": event["node"]["type"],
                 "occurredAt": event["node"]["occurredAt"],
                 "app_id": event["node"]["app"]["id"],
                 "app_name": event["node"]["app"]["name"],
@@ -562,7 +814,10 @@ class ShopifySubscriptionWithCostStream(ShopifyPartnersStream):
                 "charge_test": event["node"]["charge"]["test"],
                 "charge_name": event["node"]["charge"]["name"],
                 "charge_billingOn": event["node"]["charge"]["billingOn"],
-                "charge_amount": event["node"]["charge"]["amount"],
+                "charge_amount": event["node"]["charge"]["amount"]["amount"],
+                "charge_currencyCode": event["node"]["charge"]["amount"][
+                    "currencyCode"
+                ],
             }
 
 
@@ -887,11 +1142,20 @@ class AllTransactions(ShopifyPartnersStream):
     def parse_response(self, response: requests.Response, **kwargs):
         response_data = response.json()
 
+        print(f"Response Data :: {response_data}")
+
         # Iterate over each event in the response and yield it
         for transaction in response_data["data"]["transactions"]["edges"]:
+            filtered_dict = {
+                key: value
+                for key, value in transaction["node"].items()
+                if key not in ["id", "createdAt"]
+            }
             yield {
                 "createdAt": transaction["node"]["createdAt"],
                 "id": transaction["node"]["id"],
+                # because we are dealing with different shapes of data depending on the details returned the remainder will be stored in a generic data object
+                "data": json.dumps(filtered_dict),
             }
 
 
